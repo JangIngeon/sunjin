@@ -1,0 +1,2658 @@
+<html lang="ko"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIDC Revenue Simulator V2</title>
+  <style>
+    :root {
+      --bg-app: #eef3fb;
+      --bg-app-2: #e8f8f6;
+      --bg-panel: rgba(255, 255, 255, 0.92);
+      --bg-panel-solid: #ffffff;
+      --text-main: #101827;
+      --text-muted: #667085;
+      --text-soft: #94a3b8;
+      --border: #d9e2ef;
+      --border-strong: #c8d4e6;
+      --primary: #6457ff;
+      --primary-strong: #4f46e5;
+      --primary-soft: #ecebff;
+      --success: #06a77d;
+      --success-soft: #dcfce7;
+      --warning: #b7791f;
+      --warning-soft: #fff7e0;
+      --danger: #e5484d;
+      --danger-soft: #fee2e2;
+      --ink: #0f172a;
+      --hero-1: #111827;
+      --hero-2: #303579;
+      --hero-3: #4d58bd;
+      --hero-4: #2f6f72;
+      --teal: #28d6b3;
+      --gb200-color: #f97316;
+      --gb300-color: #0ea5e9;
+      --vr-color: #10b981;
+      --radius-xs: 10px;
+      --radius-sm: 14px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --shadow-card: 0 18px 45px rgba(31, 42, 68, 0.10);
+      --shadow-soft: 0 8px 24px rgba(31, 42, 68, 0.08);
+      --shadow-hero: 0 24px 60px rgba(30, 41, 99, 0.26);
+      --font-sans: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      line-height: 1.5;
+      background:
+        radial-gradient(circle at 8% -6%, rgba(105, 99, 255, 0.20), transparent 28%),
+        radial-gradient(circle at 92% 8%, rgba(40, 214, 179, 0.18), transparent 30%),
+        linear-gradient(135deg, var(--bg-app), var(--bg-app-2));
+      overflow-x: hidden;
+    }
+
+    button, input { font-family: inherit; }
+    button { cursor: pointer; }
+    .app-shell {
+      width: min(1480px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 42px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 386px;
+      border-radius: 36px;
+      padding: 42px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      align-items: center;
+      color: #fff;
+      background:
+        radial-gradient(circle at 42% 106%, rgba(40, 214, 179, 0.30) 0 18%, transparent 19%),
+        radial-gradient(circle at 102% 0%, rgba(100, 87, 255, 0.46) 0 25%, transparent 26%),
+        linear-gradient(135deg, var(--hero-1) 0%, var(--hero-2) 50%, var(--hero-4) 100%);
+      box-shadow: var(--shadow-hero);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.06), transparent 44%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 72px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .hero-copy { position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.74);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--teal);
+      box-shadow: 0 0 0 7px rgba(40, 214, 179, 0.16);
+    }
+    .hero h1 {
+      max-width: 860px;
+      font-size: clamp(38px, 4.2vw, 60px);
+      line-height: 1.05;
+      letter-spacing: -0.06em;
+      font-weight: 950;
+      margin-bottom: 24px;
+    }
+    .hero-copy p {
+      max-width: 790px;
+      font-size: 16px;
+      font-weight: 650;
+      color: rgba(255, 255, 255, 0.70);
+      margin-bottom: 28px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-btn {
+      border: 0;
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: #111827;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+    .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 13px 30px rgba(0,0,0,0.18); }
+    .hero-btn.secondary {
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(10px);
+    }
+
+    .view-tabs {
+      width: fit-content;
+      display: flex;
+      gap: 6px;
+      margin: 20px 0 18px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+    .view-tab {
+      min-width: 120px;
+      min-height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #697386;
+      font-size: 13px;
+      font-weight: 950;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .view-tab.active {
+      color: #fff;
+      background: #111827;
+      box-shadow: 0 10px 26px rgba(17, 24, 39, 0.20);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 424px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .control-panel, .panel, .summary-card {
+      background: var(--bg-panel);
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(10px);
+    }
+    .control-panel {
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow: hidden;
+      border-radius: 26px;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-heading {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-heading h2 {
+      font-size: 20px;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+    }
+    .panel-pill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text-muted);
+    }
+    .soft-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      color: var(--primary-strong);
+      background: var(--primary-soft);
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .controls-root {
+      padding: 22px 24px 26px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .controls-root::-webkit-scrollbar { width: 8px; }
+    .controls-root::-webkit-scrollbar-track { background: transparent; }
+    .controls-root::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.44); border-radius: 999px; }
+    .control-group { margin-bottom: 28px; }
+    .control-group:last-child { margin-bottom: 0; }
+    .control-group h3 {
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .control-item {
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #d8e0ec;
+    }
+    .control-item:last-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+    .control-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .control-meta label {
+      font-size: 13px;
+      font-weight: 950;
+      color: var(--text-main);
+    }
+    .control-value {
+      flex: 0 0 auto;
+      min-width: 58px;
+      text-align: center;
+      border-radius: 999px;
+      padding: 3px 10px;
+      color: var(--primary-strong);
+      background: var(--primary-soft);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .control-field {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 116px;
+      gap: 10px;
+      align-items: center;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+    input[type="number"] {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(248, 250, 252, 0.92);
+      color: var(--text-main);
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 850;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(100, 87, 255, 0.12);
+    }
+    .base-hint {
+      margin-top: 8px;
+      color: #78859a;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .results-area { min-width: 0; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .summary-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 142px;
+      border-radius: 22px;
+      padding: 20px 20px 18px;
+    }
+    .summary-card .label {
+      position: relative;
+      z-index: 1;
+      display: block;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 950;
+      margin-bottom: 6px;
+    }
+    .summary-card .value {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(28px, 2.5vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.06em;
+      font-weight: 950;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .summary-card .hint {
+      position: relative;
+      z-index: 1;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .text-primary { color: var(--primary) !important; }
+    .text-success { color: var(--success) !important; }
+    .text-danger { color: var(--danger) !important; }
+
+    .panel {
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .panel-head h2 {
+      font-size: 21px;
+      line-height: 1.22;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+      margin-bottom: 8px;
+    }
+    .panel-head p {
+      max-width: 850px;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .dark-pill {
+      flex: 0 0 auto;
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: #fff;
+      background: #111827;
+      font-size: 12px;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.18);
+    }
+
+    .rack-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .rack-select-card {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      min-height: 190px;
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      background: #fff;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .rack-select-card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(31, 42, 68, 0.12); }
+    .rack-select-card.active {
+      border-color: rgba(100, 87, 255, 0.72);
+      box-shadow: 0 18px 42px rgba(100, 87, 255, 0.18);
+    }
+    .rack-kicker {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 0 9px;
+      border-radius: 999px;
+      color: var(--rack-color, var(--primary));
+      background: color-mix(in srgb, var(--rack-color, var(--primary)) 12%, #ffffff);
+      font-size: 11px;
+      font-weight: 950;
+      margin-bottom: 12px;
+    }
+    .rack-select-card strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+      color: var(--text-main);
+      font-size: 21px;
+      line-height: 1.16;
+      letter-spacing: -0.05em;
+      font-weight: 950;
+      margin-bottom: 6px;
+    }
+    .rack-sub {
+      position: relative;
+      z-index: 1;
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 850;
+      margin-bottom: 16px;
+    }
+    .mini-specs {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .mini-specs span {
+      display: block;
+      min-height: 48px;
+      border: 1px solid #e8edf5;
+      border-radius: 14px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      color: #7b8798;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .mini-specs b {
+      display: block;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 950;
+      margin-top: 3px;
+    }
+
+    .usage-strip {
+      display: grid;
+      grid-template-columns: 158px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin: 4px 0 18px;
+      padding: 14px 16px;
+      border: 1px solid #e4ebf6;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #fbfdff, #f8fafc);
+      color: #5f6f85;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .meter {
+      overflow: hidden;
+      height: 11px;
+      border-radius: 999px;
+      background: #e6edf7;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--success), var(--teal));
+      transition: width 0.25s ease;
+    }
+    .usage-strip strong {
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .rack-adjust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .rack-adjust-card {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      background: #fff;
+    }
+    .rack-adjust-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .rack-adjust-title strong {
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .count-chip {
+      color: var(--rack-color, var(--primary));
+      background: color-mix(in srgb, var(--rack-color, var(--primary)) 11%, #ffffff);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .rack-count-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 82px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .rack-count-control input[type="range"] {
+      min-height: 28px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    .rack-count-control input[type="range"]:active {
+      cursor: grabbing;
+    }
+    .spec-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .spec-input label {
+      display: block;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 950;
+      margin-bottom: 5px;
+    }
+    .spec-input .krw-hint {
+      min-height: 17px;
+      color: var(--primary-strong);
+      font-size: 11px;
+      font-weight: 850;
+      margin-top: 5px;
+    }
+
+    .chart-panel { padding-bottom: 18px; }
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 315px;
+      margin-top: 8px;
+    }
+    svg.chart {
+      width: 100%;
+      height: 315px;
+      display: block;
+      overflow: visible;
+    }
+    .axis, .gridline { stroke: #dbe4f0; stroke-width: 1; }
+    .gridline.zero { stroke: #bdc8d8; stroke-dasharray: 5 6; }
+    .line { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .line.revenue { stroke: var(--primary); }
+    .line.expense { stroke: #f59e0b; }
+    .line.profit { stroke: var(--success); }
+    .dot { stroke: #fff; stroke-width: 3; r: 5; }
+    .dot.revenue { fill: var(--primary); }
+    .dot.expense { fill: #f59e0b; }
+    .dot.profit { fill: var(--success); }
+    .dot.hover-active { r: 7; stroke-width: 3; }
+    .hover-zone { fill: transparent; cursor: crosshair; }
+    .hover-line {
+      stroke: #94a3b8;
+      stroke-width: 1;
+      stroke-dasharray: 4 5;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+    }
+    .chart-tooltip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 6;
+      min-width: 168px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #111827;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 14px 30px rgba(17, 24, 39, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-9999px, -9999px);
+      transition: opacity 0.12s ease;
+      white-space: nowrap;
+    }
+    .chart-tooltip.visible { opacity: 1; }
+    .chart-tooltip .tt-title {
+      font-size: 12px;
+      font-weight: 950;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .chart-tooltip .tt-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .chart-tooltip .tt-row:first-of-type { margin-top: 0; }
+    .chart-tooltip .tt-row b {
+      margin-left: auto;
+      color: #fff;
+      font-weight: 950;
+    }
+    .chart-tooltip .tt-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .tick { fill: #64748b; font-size: 12px; font-weight: 850; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 4px;
+    }
+
+    .formula-panel {
+      background: rgba(255, 255, 255, 0.94);
+    }
+    .basis-alert {
+      border: 1px solid rgba(245, 158, 11, 0.38);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      background: linear-gradient(180deg, #fffdf7, #fff8e8);
+      color: #68460d;
+      margin-bottom: 16px;
+    }
+    .basis-alert strong {
+      color: #68460d;
+      font-weight: 950;
+    }
+    .basis-alert p {
+      color: #755018;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .basis-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .basis-chips span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 0 11px;
+      color: #5b3f0b;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(245, 158, 11, 0.24);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .formula-card {
+      min-height: 104px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      padding: 16px 18px;
+    }
+    .formula-card h3 {
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 950;
+      margin-bottom: 8px;
+    }
+    .formula-card p {
+      color: #334155;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.65;
+    }
+    .formula-card code {
+      font-family: inherit;
+      color: #273449;
+      white-space: normal;
+    }
+
+    .table-panel {
+      overflow: hidden;
+      padding-bottom: 10px;
+    }
+    .table-scroll { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 790px;
+    }
+    th, td {
+      padding: 15px 16px;
+      border-bottom: 1px solid #e5ebf5;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    th {
+      color: #6b7688;
+      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 950;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    tbody tr:hover { background: #fafcff; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td strong { font-weight: 950; }
+
+    .compare-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .compare-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #fff;
+      padding: 19px;
+    }
+    .compare-card.active {
+      border-color: rgba(100, 87, 255, 0.70);
+      box-shadow: 0 18px 42px rgba(100, 87, 255, 0.13);
+    }
+    .compare-card h3 {
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }
+    .compare-card p {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 850;
+      margin-bottom: 14px;
+    }
+    .compare-metric {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .compare-metric span {
+      border-radius: 14px;
+      padding: 10px;
+      background: #f8fafc;
+      color: #718096;
+      font-size: 10px;
+      font-weight: 950;
+    }
+    .compare-metric b {
+      display: block;
+      color: var(--text-main);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .compare-card button {
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: #111827;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .empty-note {
+      border: 1px dashed #cfd9e9;
+      border-radius: 18px;
+      padding: 18px;
+      color: #64748b;
+      background: #f8fafc;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 1240px) {
+      .hero { grid-template-columns: 1fr; gap: 26px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .control-panel { position: static; max-height: none; }
+      .controls-root { max-height: none; }
+    }
+    @media (max-width: 980px) {
+      .app-shell { width: min(100% - 18px, 1480px); padding-top: 10px; }
+      .hero { padding: 28px; border-radius: 26px; }
+      .summary-grid, .rack-card-grid, .rack-adjust-grid, .compare-summary { grid-template-columns: 1fr; }
+      .formula-grid { grid-template-columns: 1fr; }
+      .view-tabs { width: 100%; overflow-x: auto; }
+      .view-tab { min-width: 112px; }
+      .usage-strip { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .hero h1 { font-size: 34px; }
+      .control-field, .rack-count-control { grid-template-columns: 1fr; }
+      .panel, .control-panel { border-radius: 20px; }
+      .panel-head { flex-direction: column; }
+      .dark-pill { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">AIDC Revenue Simulator V2</div>
+        <h1>AIDC Rack 시스템 별<br>데이터센터 수익구조 시뮬레이션</h1>
+        <p>
+          서버/GPU 임대, 상면임대, 모델 비교를 한 화면에서 조정합니다.<br>
+          랙 종류를 바꾸면 랙당 전력, 구매가, 성능, GPU 임대단가가 연매출·누적손익 그래프와 산식 패널에 즉시 반영됩니다.
+        </p>
+        <div class="hero-actions">
+          <button type="button" class="hero-btn" data-scenario="default">보고서 기본값</button>
+          <button type="button" class="hero-btn" data-scenario="conservative">보수적 시나리오</button>
+          <button type="button" class="hero-btn" data-scenario="aggressive">공격적 시나리오</button>
+        </div>
+      </div>
+
+    </header>
+
+    <nav class="view-tabs" aria-label="수익모델 탭">
+      <button type="button" class="view-tab active" data-view="gpu">서버/GPU 임대</button>
+      <button type="button" class="view-tab" data-view="colo">상면임대</button>
+      <button type="button" class="view-tab" data-view="compare">모델 비교</button>
+    </nav>
+
+    <div class="dashboard-grid">
+      <aside class="control-panel">
+        <div class="panel-heading">
+          <h2>입력값 조정</h2>
+          <div class="panel-pill-row">
+            <span id="controlModeLabel">공통 전력·운영 기준</span>
+            <span class="soft-badge" id="controlScopeBadge">두 모델 공통</span>
+          </div>
+        </div>
+        <div class="controls-root" id="controlsRoot">
+        <section class="control-group" data-views="gpu,colo,compare" data-scope="두 모델 공통" style="display: block;">
+          <h3>공통 전력·운영 기준</h3>
+          
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_utilizationPct_range">목표 가동률</label>
+                  <span class="control-value" data-control-badge="utilizationPct">80%</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_utilizationPct_range" type="range" min="10" max="100" step="1" value="80" data-input="utilizationPct">
+                  <input type="number" min="10" max="100" step="1" value="80" data-input="utilizationPct" aria-label="목표 가동률">
+                </div>
+                <div class="base-hint">보고서 기본값: 80%</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_itPowerKw_range">IT 전력 기준</label>
+                  <span class="control-value" data-control-badge="itPowerKw">2,000kW</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_itPowerKw_range" type="range" min="190" max="20000" step="10" value="2000" data-input="itPowerKw">
+                  <input type="number" min="190" max="20000" step="10" value="2000" data-input="itPowerKw" aria-label="IT 전력 기준">
+                </div>
+                <div class="base-hint">보고서 기본값: 2,000kW</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_pue_range">PUE</label>
+                  <span class="control-value" data-control-badge="pue">1.25</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_pue_range" type="range" min="1" max="2" step="0.01" value="1.25" data-input="pue">
+                  <input type="number" min="1" max="2" step="0.01" value="1.25" data-input="pue" aria-label="PUE">
+                </div>
+                <div class="base-hint">보고서 기본값: 1.25</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_facilityCapexEok_range">시설 CAPEX</label>
+                  <span class="control-value" data-control-badge="facilityCapexEok">270억</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_facilityCapexEok_range" type="range" min="0" max="1000" step="10" value="270" data-input="facilityCapexEok">
+                  <input type="number" min="0" max="1000" step="10" value="270" data-input="facilityCapexEok" aria-label="시설 CAPEX">
+                </div>
+                <div class="base-hint">보고서 기본값: 270억</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_energyCostRate_range">전력량 요금단가</label>
+                  <span class="control-value" data-control-badge="energyCostRate">121.7원/kWh</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_energyCostRate_range" type="range" min="50" max="300" step="0.1" value="121.7" data-input="energyCostRate">
+                  <input type="number" min="50" max="300" step="0.1" value="121.7" data-input="energyCostRate" aria-label="전력량 요금단가">
+                </div>
+                <div class="base-hint">보고서 기본값: 121.7원/kWh</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_basicChargeKwMonth_range">기본요금 단가</label>
+                  <span class="control-value" data-control-badge="basicChargeKwMonth">9,810원/kW·월</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_basicChargeKwMonth_range" type="range" min="0" max="30000" step="100" value="9810" data-input="basicChargeKwMonth">
+                  <input type="number" min="0" max="30000" step="100" value="9810" data-input="basicChargeKwMonth" aria-label="기본요금 단가">
+                </div>
+                <div class="base-hint">보고서 기본값: 9,810원/kW·월</div>
+              </div>
+            
+        </section>
+      
+        <section class="control-group" data-views="gpu,compare" data-scope="GPU 모델" style="display: block;">
+          <h3>GPUaaS 상세 설정</h3>
+          
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_fxKrwUsd_range">환율</label>
+                  <span class="control-value" data-control-badge="fxKrwUsd">1,500원/USD</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_fxKrwUsd_range" type="range" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd">
+                  <input type="number" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd" aria-label="환율">
+                </div>
+                <div class="base-hint">보고서 기본값: 1,500원/USD</div>
+              </div>
+            
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_depY1">1년차 감가상각률</label>
+                    <span class="control-value" data-control-badge="depY1">0%</span>
+                  </div>
+                  <input id="control_depY1" type="number" min="0" max="100" step="1" value="0" data-input="depY1">
+                  <div class="base-hint">보고서 기본값: 0%</div>
+                </div>
+              
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_depY2">2년차 감가상각률</label>
+                    <span class="control-value" data-control-badge="depY2">0%</span>
+                  </div>
+                  <input id="control_depY2" type="number" min="0" max="100" step="1" value="0" data-input="depY2">
+                  <div class="base-hint">보고서 기본값: 0%</div>
+                </div>
+              
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_depY3">3년차 감가상각률</label>
+                    <span class="control-value" data-control-badge="depY3">10%</span>
+                  </div>
+                  <input id="control_depY3" type="number" min="0" max="100" step="1" value="10" data-input="depY3">
+                  <div class="base-hint">보고서 기본값: 10%</div>
+                </div>
+              
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_depY4">4년차 감가상각률</label>
+                    <span class="control-value" data-control-badge="depY4">20%</span>
+                  </div>
+                  <input id="control_depY4" type="number" min="0" max="100" step="1" value="20" data-input="depY4">
+                  <div class="base-hint">보고서 기본값: 20%</div>
+                </div>
+              
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_depY5">5년차 감가상각률</label>
+                    <span class="control-value" data-control-badge="depY5">30%</span>
+                  </div>
+                  <input id="control_depY5" type="number" min="0" max="100" step="1" value="30" data-input="depY5">
+                  <div class="base-hint">보고서 기본값: 30%</div>
+                </div>
+              
+        </section>
+      
+        <section class="control-group" data-views="colo" data-scope="상면 모델" style="display: none;">
+          <h3>상면임대(Colocation) 설정</h3>
+          
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_colocationFeeKwMonth_range">상면 요율</label>
+                  <span class="control-value" data-control-badge="colocationFeeKwMonth">130,000원/kW·월</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_colocationFeeKwMonth_range" type="range" min="50000" max="300000" step="5000" value="130000" data-input="colocationFeeKwMonth">
+                  <input type="number" min="50000" max="300000" step="5000" value="130000" data-input="colocationFeeKwMonth" aria-label="상면 요율">
+                </div>
+                <div class="base-hint">보고서 기본값: 130,000원/kW·월</div>
+              </div>
+            
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_electricSaleRate_range">전기 판매단가</label>
+                  <span class="control-value" data-control-badge="electricSaleRate">170.1원/kWh</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_electricSaleRate_range" type="range" min="80" max="300" step="0.1" value="170.1" data-input="electricSaleRate">
+                  <input type="number" min="80" max="300" step="0.1" value="170.1" data-input="electricSaleRate" aria-label="전기 판매단가">
+                </div>
+                <div class="base-hint">보고서 기본값: 170.1원/kWh</div>
+              </div>
+            
+        </section>
+      </div>
+      </aside>
+
+      <main class="results-area">
+        <section class="summary-grid" id="summaryCards" aria-label="매출 요약">
+        <article class="summary-card">
+          <span class="label">연간 매출</span>
+          <div class="value text-primary">2,523억</div>
+          <div class="hint">보고서 기본값 대비 +0억</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 매출</span>
+          <div class="value text-primary">12,614억</div>
+          <div class="hint">Vera Rubin 10대 · 총 36,000 PFLOPS</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 지출</span>
+          <div class="value">2,258억</div>
+          <div class="hint">IT CAPEX 1,170억 + 시설 270억</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 손익</span>
+          <div class="value text-success">10,356억</div>
+          <div class="hint">BEP 1년차 · 누적 매출 대비 82.1% </div>
+        </article>
+      </section>
+        <div id="mainContent">
+          
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>랙 시스템 선택값</h2>
+              <p>보고서의 GB200·GB300·Vera Rubin 비교표 값을 기준으로 기본 전력·구매가·성능을 넣었습니다. 카드를 누르면 해당 랙으로 IT 전력 기준 내 최대 수량이 자동 배치됩니다.</p>
+            </div>
+            <button type="button" class="dark-pill" data-reset-selected="">선택 랙 기준값 재적용</button>
+          </div>
+          <div class="rack-card-grid">
+            
+                <button type="button" class="rack-select-card " data-select-rack="gb200" style="--rack-color:var(--gb200-color)">
+                  <span class="rack-kicker">NVL72 · 최대 16대</span>
+                  <strong>GB200 NVL72</strong>
+                  <span class="rack-sub">36 Grace CPU + 72 Blackwell GPU</span>
+                  <div class="mini-specs">
+                    <span>랙당 전력<b>120kW</b></span>
+                    <span>랙당 구매가<b>$3,000,000</b></span>
+                    <span>기본 단가<b>20,000원/hr</b></span>
+                    <span>FP4 성능<b>1,440 PFLOPS</b></span>
+                  </div>
+                </button>
+              
+                <button type="button" class="rack-select-card " data-select-rack="gb300" style="--rack-color:var(--gb300-color)">
+                  <span class="rack-kicker">NVL72 · 최대 14대</span>
+                  <strong>GB300 NVL72</strong>
+                  <span class="rack-sub">36 Grace CPU + 72 Blackwell Ultra GPU</span>
+                  <div class="mini-specs">
+                    <span>랙당 전력<b>140kW</b></span>
+                    <span>랙당 구매가<b>$4,000,000</b></span>
+                    <span>기본 단가<b>31,500원/hr</b></span>
+                    <span>FP4 성능<b>2,160 PFLOPS</b></span>
+                  </div>
+                </button>
+              
+                <button type="button" class="rack-select-card active" data-select-rack="veraRubin" style="--rack-color:var(--vr-color)">
+                  <span class="rack-kicker">NVL72 · 최대 10대</span>
+                  <strong>Vera Rubin NVL72</strong>
+                  <span class="rack-sub">36 Vera CPU + 72 Rubin GPU</span>
+                  <div class="mini-specs">
+                    <span>랙당 전력<b>190kW</b></span>
+                    <span>랙당 구매가<b>$7,800,000</b></span>
+                    <span>기본 단가<b>50,000원/hr</b></span>
+                    <span>FP4 성능<b>3,600 PFLOPS</b></span>
+                  </div>
+                </button>
+              
+          </div>
+        </section>
+      
+          
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>랙 구성 직접 조정</h2>
+              <p>랙 수량, 랙당 구매가, 랙당 전력, GPU 시간당 임대단가를 직접 바꿀 수 있습니다. 수량은 IT 전력 기준을 넘지 않도록 자동 보정됩니다.</p>
+            </div>
+          </div>
+          <div class="usage-strip">
+            <span>GPU 랙 전력 사용률</span>
+            <div class="meter"><span style="width:95%"></span></div>
+            <strong>95% (1,900kW / 2,000kW)</strong>
+          </div>
+          <div class="rack-adjust-grid">
+            
+                <article class="rack-adjust-card" data-rack-card="gb200" style="--rack-color:var(--gb200-color)">
+                  <div class="rack-adjust-title">
+                    <strong>GB200</strong>
+                    <span class="count-chip">0대</span>
+                  </div>
+                  <div class="rack-count-control">
+                    <input type="range" min="0" max="16" step="1" value="0" data-rack-count="gb200">
+                    <input type="number" min="0" max="16" step="1" value="0" data-rack-count="gb200" aria-label="GB200 랙 수량">
+                  </div>
+                  <div class="spec-grid">
+                    <div class="spec-input">
+                      <label>랙당 구매가(USD)</label>
+                      <input type="number" min="0" step="1000" value="3000000" data-rack-key="gb200" data-rack-prop="rackPriceUsd">
+                      <div class="krw-hint">약 45억원</div>
+                    </div>
+                    <div class="spec-input">
+                      <label>랙당 전력(kW)</label>
+                      <input type="number" min="1" step="1" value="120" data-rack-key="gb200" data-rack-prop="rackPowerKw">
+                    </div>
+                    <div class="spec-input">
+                      <label>GPU 시간당 임대단가(원/hr)</label>
+                      <input type="number" min="0" step="500" value="20000" data-rack-key="gb200" data-rack-prop="gpuHourlyRate">
+                    </div>
+                  </div>
+                </article>
+              
+                <article class="rack-adjust-card" data-rack-card="gb300" style="--rack-color:var(--gb300-color)">
+                  <div class="rack-adjust-title">
+                    <strong>GB300</strong>
+                    <span class="count-chip">0대</span>
+                  </div>
+                  <div class="rack-count-control">
+                    <input type="range" min="0" max="14" step="1" value="0" data-rack-count="gb300">
+                    <input type="number" min="0" max="14" step="1" value="0" data-rack-count="gb300" aria-label="GB300 랙 수량">
+                  </div>
+                  <div class="spec-grid">
+                    <div class="spec-input">
+                      <label>랙당 구매가(USD)</label>
+                      <input type="number" min="0" step="1000" value="4000000" data-rack-key="gb300" data-rack-prop="rackPriceUsd">
+                      <div class="krw-hint">약 60억원</div>
+                    </div>
+                    <div class="spec-input">
+                      <label>랙당 전력(kW)</label>
+                      <input type="number" min="1" step="1" value="140" data-rack-key="gb300" data-rack-prop="rackPowerKw">
+                    </div>
+                    <div class="spec-input">
+                      <label>GPU 시간당 임대단가(원/hr)</label>
+                      <input type="number" min="0" step="500" value="31500" data-rack-key="gb300" data-rack-prop="gpuHourlyRate">
+                    </div>
+                  </div>
+                </article>
+              
+                <article class="rack-adjust-card" data-rack-card="veraRubin" style="--rack-color:var(--vr-color)">
+                  <div class="rack-adjust-title">
+                    <strong>Vera Rubin</strong>
+                    <span class="count-chip">10대</span>
+                  </div>
+                  <div class="rack-count-control">
+                    <input type="range" min="0" max="10" step="1" value="10" data-rack-count="veraRubin">
+                    <input type="number" min="0" max="10" step="1" value="10" data-rack-count="veraRubin" aria-label="Vera Rubin 랙 수량">
+                  </div>
+                  <div class="spec-grid">
+                    <div class="spec-input">
+                      <label>랙당 구매가(USD)</label>
+                      <input type="number" min="0" step="1000" value="7800000" data-rack-key="veraRubin" data-rack-prop="rackPriceUsd">
+                      <div class="krw-hint">약 117억원</div>
+                    </div>
+                    <div class="spec-input">
+                      <label>랙당 전력(kW)</label>
+                      <input type="number" min="1" step="1" value="190" data-rack-key="veraRubin" data-rack-prop="rackPowerKw">
+                    </div>
+                    <div class="spec-input">
+                      <label>GPU 시간당 임대단가(원/hr)</label>
+                      <input type="number" min="0" step="500" value="50000" data-rack-key="veraRubin" data-rack-prop="gpuHourlyRate">
+                    </div>
+                  </div>
+                </article>
+              
+          </div>
+        </section>
+      
+          
+        <section class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <h2>5개년 누적 추이</h2>
+              <p>누적 매출, 누적 지출, 누적 손익을 같은 축에서 비교합니다.</p>
+            </div>
+          </div>
+          <div class="chart-wrap" id="chartWrap">
+        <svg class="chart" viewBox="0 0 860 300" role="img" aria-label="5개년 누적 추이 차트">
+          <line class="gridline" x1="76" y1="262" x2="836" y2="262"></line><text class="tick" x="64" y="266" text-anchor="end">-1,514억</text><line class="gridline" x1="76" y1="202.5" x2="836" y2="202.5"></line><text class="tick" x="64" y="206.5" text-anchor="end">2,397억</text><line class="gridline" x1="76" y1="143" x2="836" y2="143"></line><text class="tick" x="64" y="147" text-anchor="end">6,307억</text><line class="gridline" x1="76" y1="83.5" x2="836" y2="83.5"></line><text class="tick" x="64" y="87.5" text-anchor="end">10,218억</text><line class="gridline" x1="76" y1="24" x2="836" y2="24"></line><text class="tick" x="64" y="28" text-anchor="end">14,128억</text><line class="gridline zero" x1="76" y1="238.9677419354839" x2="836" y2="238.9677419354839"></line>
+          <line class="axis" x1="76" y1="262" x2="836" y2="262"></line>
+          <line class="axis" x1="76" y1="24" x2="76" y2="262"></line>
+          <polyline class="line revenue" points="76,200.58064516129033 266,162.1935483870968 456,123.80645161290323 646,85.41935483870968 836,47.032258064516114"></polyline><circle class="dot revenue" cx="76" cy="200.58064516129033"></circle><circle class="dot revenue" cx="266" cy="162.1935483870968"></circle><circle class="dot revenue" cx="456" cy="123.80645161290323"></circle><circle class="dot revenue" cx="646" cy="85.41935483870968"></circle><circle class="dot revenue" cx="836" cy="47.032258064516114"></circle><polyline class="line expense" points="76,216.70431603359603 266,216.3513334959739 456,214.21812743500516 646,210.30469785068988 836,204.61104474302795"></polyline><circle class="dot expense" cx="76" cy="216.70431603359603"></circle><circle class="dot expense" cx="266" cy="216.3513334959739"></circle><circle class="dot expense" cx="456" cy="214.21812743500516"></circle><circle class="dot expense" cx="646" cy="210.30469785068988"></circle><circle class="dot expense" cx="836" cy="204.61104474302795"></circle><polyline class="line profit" points="76,222.8440710631782 266,184.80995682660676 456,148.55606611338197 646,114.0823989235037 836,81.38895525697205"></polyline><circle class="dot profit" cx="76" cy="222.8440710631782"></circle><circle class="dot profit" cx="266" cy="184.80995682660676"></circle><circle class="dot profit" cx="456" cy="148.55606611338197"></circle><circle class="dot profit" cx="646" cy="114.0823989235037"></circle><circle class="dot profit" cx="836" cy="81.38895525697205"></circle>
+          
+        <text class="tick" x="76" y="292" text-anchor="middle">1년차</text>
+      
+        <text class="tick" x="266" y="292" text-anchor="middle">2년차</text>
+      
+        <text class="tick" x="456" y="292" text-anchor="middle">3년차</text>
+      
+        <text class="tick" x="646" y="292" text-anchor="middle">4년차</text>
+      
+        <text class="tick" x="836" y="292" text-anchor="middle">5년차</text>
+      
+        </svg>
+      </div>
+          <div class="legend" id="legend">
+        <div class="legend-item"><span class="swatch" style="background:var(--primary)"></span>누적 매출</div>
+      
+        <div class="legend-item"><span class="swatch" style="background:#f59e0b"></span>누적 지출</div>
+      
+        <div class="legend-item"><span class="swatch" style="background:var(--success)"></span>누적 손익</div>
+      </div>
+        </section>
+      
+          
+        <section class="panel formula-panel">
+          <div class="panel-head">
+            <div>
+              <h2>산식 및 기준값</h2>
+              <p>입력값과 랙 기본 스펙이 어떤 산식으로 매출·지출에 반영되는지 확인할 수 있습니다. GPU 임대단가와 랙 스펙은 직접 조정 가능합니다.</p>
+            </div>
+          </div>
+
+          <div class="basis-alert">
+            <p><strong>현재 기준: 선택 랙은 Vera Rubin NVL72이며, Vera Rubin 10대 구성입니다. 랙당 전력 190kW, 랙당 구매가 $7,800,000, 기본 임대단가 50,000원/hr를 반영해 연매출 2,523억, IT 장비 CAPEX 1,170억, 전기료 23.2억로 계산합니다.</strong></p>
+            <div class="usage-strip" style="margin:0; background:rgba(255,255,255,0.58); border-color:rgba(245,158,11,0.22)">
+              <span>전력 배치 현황</span>
+              <div class="meter"><span style="width:95%"></span></div>
+              <strong>GPU 랙 전력 사용률: 95% (Vera Rubin 10대 / IT 전력 2,000kW)</strong>
+            </div>
+            <div class="basis-chips">
+              <span>목표 가동률 80%</span>
+              <span>PUE 1.25</span>
+              <span>시설 CAPEX 270억</span>
+              <span>전력량 단가 121.7원/kWh</span>
+              <span>기본요금 9,810원/kW·월</span>
+              <span>환율 1,500원/USD</span><span>감가상각 0/0/10/20/30%</span>
+            </div>
+          </div>
+
+          <div class="formula-grid">
+            <article class="formula-card">
+              <h3>GPUaaS 연매출</h3>
+              <p><code>Σ(랙 수 × 랙당 GPU 수 × 8,760시간 × 가동률 × GPU 시간당 단가)</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>상면임대 연매출</h3>
+              <p><code>IT 전력(kW) × 상면요율 × 12개월 + 수전전력(kW) × 8,760시간 × 가동률 × 전기 판매단가</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>IT 장비 CAPEX</h3>
+              <p><code>Σ(랙 수 × 선택 랙당 구매가(USD) × 환율)</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>전기료</h3>
+              <p><code>수전전력(kW) × 기본요금 × 12 + 사용전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
+            </article>
+          </div>
+        </section>
+      
+          
+        <section class="panel table-panel">
+          <div class="panel-head">
+            <div>
+              <h2>연차별 수익구조</h2>
+              <p>연도별 매출·지출·손익과 누적 손익을 표로 확인합니다.</p>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>연차</th>
+                  <th>연매출</th>
+                  <th>연지출</th>
+                  <th>연손익</th>
+                  <th>누적매출</th>
+                  <th>누적지출</th>
+                  <th>누적손익</th>
+                  <th>연간 손익률</th>
+                </tr>
+              </thead>
+              <tbody>
+          <tr>
+            <td><strong>1년차</strong></td>
+            <td>2,523억</td>
+            <td>1,463억</td>
+            <td class="text-success">1,060억</td>
+            <td>2,523억</td>
+            <td>1,463억</td>
+            <td class="text-success"><strong>1,060억</strong></td>
+            <td>42%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>2년차</strong></td>
+            <td>2,523억</td>
+            <td>23.2억</td>
+            <td class="text-success">2,500억</td>
+            <td>5,046억</td>
+            <td>1,486억</td>
+            <td class="text-success"><strong>3,559억</strong></td>
+            <td>99.1%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>3년차</strong></td>
+            <td>2,523억</td>
+            <td>140.2억</td>
+            <td class="text-success">2,383억</td>
+            <td>7,569억</td>
+            <td>1,627억</td>
+            <td class="text-success"><strong>5,942억</strong></td>
+            <td>94.4%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>4년차</strong></td>
+            <td>2,523억</td>
+            <td>257.2억</td>
+            <td class="text-success">2,266억</td>
+            <td>10,092억</td>
+            <td>1,884억</td>
+            <td class="text-success"><strong>8,208억</strong></td>
+            <td>89.8%</td>
+          </tr>
+        
+          <tr>
+            <td><strong>5년차</strong></td>
+            <td>2,523억</td>
+            <td>374.2억</td>
+            <td class="text-success">2,149억</td>
+            <td>12,614억</td>
+            <td>2,258억</td>
+            <td class="text-success"><strong>10,356억</strong></td>
+            <td>85.2%</td>
+          </tr>
+        </tbody>
+            </table>
+          </div>
+        </section>
+      
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const EOK = 100000000;
+    const HOURS = 8760;
+    const YEARS = 5;
+
+    const RACK_KEYS = ['gb200', 'gb300', 'veraRubin'];
+    const RACK_COUNT_KEY = {
+      gb200: 'racks_gb200',
+      gb300: 'racks_gb300',
+      veraRubin: 'racks_vr'
+    };
+
+    const RACK_DEFAULTS = {
+      gb200: {
+        label: 'GB200 NVL72',
+        shortLabel: 'GB200',
+        processorText: '36 Grace CPU + 72 Blackwell GPU',
+        gpusPerRack: 72,
+        rackPowerKw: 120,
+        rackPriceUsd: 3000000,
+        gpuHourlyRate: 20000,
+        fp4Pflops: 1440,
+        color: 'var(--gb200-color)'
+      },
+      gb300: {
+        label: 'GB300 NVL72',
+        shortLabel: 'GB300',
+        processorText: '36 Grace CPU + 72 Blackwell Ultra GPU',
+        gpusPerRack: 72,
+        rackPowerKw: 140,
+        rackPriceUsd: 4000000,
+        gpuHourlyRate: 31500,
+        fp4Pflops: 2160,
+        color: 'var(--gb300-color)'
+      },
+      veraRubin: {
+        label: 'Vera Rubin NVL72',
+        shortLabel: 'Vera Rubin',
+        processorText: '36 Vera CPU + 72 Rubin GPU',
+        gpusPerRack: 72,
+        rackPowerKw: 190,
+        rackPriceUsd: 7800000,
+        gpuHourlyRate: 50000,
+        fp4Pflops: 3600,
+        color: 'var(--vr-color)'
+      }
+    };
+
+    const DEFAULTS = {
+      activeView: 'gpu',
+      selectedRack: 'veraRubin',
+      utilizationPct: 80,
+      itPowerKw: 2000,
+      pue: 1.25,
+      facilityCapexEok: 270,
+      energyCostRate: 121.7,
+      basicChargeKwMonth: 9810,
+      fxKrwUsd: 1500,
+      depY1: 0,
+      depY2: 0,
+      depY3: 10,
+      depY4: 20,
+      depY5: 30,
+      colocationFeeKwMonth: 130000,
+      electricSaleRate: 170.1
+    };
+
+    const controlGroups = [
+      {
+        title: '공통 전력·운영 기준',
+        scope: '두 모델 공통',
+        views: ['gpu', 'colo', 'compare'],
+        controls: [
+          { id: 'utilizationPct', label: '목표 가동률', suffix: '%', min: 10, max: 100, step: 1, digits: 0 },
+          { id: 'itPowerKw', label: 'IT 전력 기준', suffix: 'kW', min: 190, max: 20000, step: 10, digits: 0 },
+          { id: 'pue', label: 'PUE', suffix: '', min: 1.00, max: 2.00, step: 0.01, digits: 2 },
+          { id: 'facilityCapexEok', label: '시설 CAPEX', suffix: '억', min: 0, max: 1000, step: 10, digits: 0 },
+          { id: 'energyCostRate', label: '전력량 요금단가', suffix: '원/kWh', min: 50, max: 300, step: 0.1, digits: 1 },
+          { id: 'basicChargeKwMonth', label: '기본요금 단가', suffix: '원/kW·월', min: 0, max: 30000, step: 100, digits: 0 }
+        ]
+      },
+      {
+        title: 'GPUaaS 상세 설정',
+        scope: 'GPU 모델',
+        views: ['gpu', 'compare'],
+        controls: [
+          { id: 'fxKrwUsd', label: '환율', suffix: '원/USD', min: 1000, max: 1800, step: 10, digits: 0 },
+          { id: 'depY1', label: '1년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
+          { id: 'depY2', label: '2년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
+          { id: 'depY3', label: '3년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
+          { id: 'depY4', label: '4년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
+          { id: 'depY5', label: '5년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true }
+        ]
+      },
+      {
+        title: '상면임대(Colocation) 설정',
+        scope: '상면 모델',
+        views: ['colo'],
+        controls: [
+          { id: 'colocationFeeKwMonth', label: '상면 요율', suffix: '원/kW·월', min: 50000, max: 300000, step: 5000, digits: 0 },
+          { id: 'electricSaleRate', label: '전기 판매단가', suffix: '원/kWh', min: 80, max: 300, step: 0.1, digits: 1 }
+        ]
+      }
+    ];
+
+    let rackTypes = cloneRacks(RACK_DEFAULTS);
+    let state = {
+      ...DEFAULTS,
+      racks_gb200: 0,
+      racks_gb300: 0,
+      racks_vr: 0
+    };
+
+    const nf = new Intl.NumberFormat('ko-KR');
+    const nf1 = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 1, minimumFractionDigits: 0 });
+    const nf2 = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 2, minimumFractionDigits: 0 });
+
+    function cloneRacks(source) {
+      return Object.fromEntries(Object.entries(source).map(([key, value]) => [key, { ...value }]));
+    }
+
+    function getControlDef(id) {
+      for (const group of controlGroups) {
+        const found = group.controls.find(control => control.id === id);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function pct(value, digits = 1) {
+      return `${new Intl.NumberFormat('ko-KR', { maximumFractionDigits: digits, minimumFractionDigits: 0 }).format(value)}%`;
+    }
+
+    function eok(value) {
+      const abs = Math.abs(value);
+      const formatted = abs >= 1000 ? nf.format(Math.round(abs)) : nf1.format(abs);
+      return `${value < 0 ? '-' : ''}${formatted}억`;
+    }
+
+    function eokAxis(value) {
+      const abs = Math.abs(value);
+      if (abs >= 1000) return `${value < 0 ? '-' : ''}${nf.format(Math.round(abs))}억`;
+      return `${value < 0 ? '-' : ''}${nf1.format(abs)}억`;
+    }
+
+    function usd(value) {
+      return `$${nf.format(Math.round(value))}`;
+    }
+
+    function krw(value) {
+      return `${nf.format(Math.round(value))}원`;
+    }
+
+    function formatKrwAmount(value) {
+      if (value >= EOK) return `약 ${nf2.format(value / EOK)}억원`;
+      if (value >= 10000) return `약 ${nf.format(Math.round(value / 10000))}만원`;
+      return `약 ${nf.format(Math.round(value))}원`;
+    }
+
+    function formatControlValue(id, value) {
+      const def = getControlDef(id);
+      if (!def) return nf.format(value);
+      const formatter = new Intl.NumberFormat('ko-KR', {
+        maximumFractionDigits: def.digits ?? 0,
+        minimumFractionDigits: def.digits === 2 ? 2 : 0
+      });
+      return `${formatter.format(value)}${def.suffix}`;
+    }
+
+    function getCountFromState(inputState, key) {
+      return Number(inputState[RACK_COUNT_KEY[key]] || 0);
+    }
+
+    function setCountForState(inputState, key, value) {
+      inputState[RACK_COUNT_KEY[key]] = Math.max(0, Math.floor(Number(value) || 0));
+    }
+
+    function clearRackCounts(inputState = state) {
+      RACK_KEYS.forEach(key => setCountForState(inputState, key, 0));
+    }
+
+    function calcUsedItPower(inputState = state, inputRacks = rackTypes) {
+      return RACK_KEYS.reduce((sum, key) => sum + getCountFromState(inputState, key) * inputRacks[key].rackPowerKw, 0);
+    }
+
+    function getNonZeroRackKeys(inputState = state) {
+      return RACK_KEYS.filter(key => getCountFromState(inputState, key) > 0);
+    }
+
+    function isPureSelectedMix(inputState = state) {
+      const keys = getNonZeroRackKeys(inputState);
+      return keys.length === 0 || (keys.length === 1 && keys[0] === inputState.selectedRack);
+    }
+
+    function fillSelectedRack(inputState = state, inputRacks = rackTypes, key = inputState.selectedRack) {
+      inputState.selectedRack = key;
+      clearRackCounts(inputState);
+      setCountForState(inputState, key, Math.floor(inputState.itPowerKw / inputRacks[key].rackPowerKw));
+    }
+
+    function maxCountForRack(key) {
+      return Math.floor(state.itPowerKw / rackTypes[key].rackPowerKw);
+    }
+
+    function enforcePowerCap(changedKey = null) {
+      const cap = state.itPowerKw;
+      let total = calcUsedItPower();
+
+      if (total <= cap) return;
+
+      const reduceOrder = RACK_KEYS
+        .filter(key => key !== changedKey)
+        .sort((a, b) => {
+          const aSelected = a === state.selectedRack ? 1 : 0;
+          const bSelected = b === state.selectedRack ? 1 : 0;
+          return aSelected - bSelected;
+        });
+
+      if (changedKey && RACK_KEYS.includes(changedKey)) reduceOrder.push(changedKey);
+
+      reduceOrder.forEach(key => {
+        if (total <= cap) return;
+        const count = getCountFromState(state, key);
+        if (count <= 0) return;
+        const excess = total - cap;
+        const drop = Math.min(count, Math.ceil(excess / rackTypes[key].rackPowerKw));
+        setCountForState(state, key, count - drop);
+        total = calcUsedItPower();
+      });
+    }
+
+    function handleItPowerChange() {
+      if (isPureSelectedMix()) {
+        fillSelectedRack(state, rackTypes, state.selectedRack);
+      } else {
+        enforcePowerCap();
+      }
+    }
+
+    function buildControls() {
+      const root = document.getElementById('controlsRoot');
+      root.innerHTML = controlGroups.map(group => `
+        <section class="control-group" data-views="${group.views.join(',')}" data-scope="${group.scope}">
+          <h3>${group.title}</h3>
+          ${group.controls.map(def => {
+            const current = state[def.id];
+            const base = DEFAULTS[def.id];
+            if (def.numberOnly) {
+              return `
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label for="control_${def.id}">${def.label}</label>
+                    <span class="control-value" data-control-badge="${def.id}">${formatControlValue(def.id, current)}</span>
+                  </div>
+                  <input id="control_${def.id}" type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${current}" data-input="${def.id}" />
+                  <div class="base-hint">보고서 기본값: ${formatControlValue(def.id, base)}</div>
+                </div>
+              `;
+            }
+            return `
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_${def.id}_range">${def.label}</label>
+                  <span class="control-value" data-control-badge="${def.id}">${formatControlValue(def.id, current)}</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_${def.id}_range" type="range" min="${def.min}" max="${def.max}" step="${def.step}" value="${current}" data-input="${def.id}" />
+                  <input type="number" min="${def.min}" max="${def.max}" step="${def.step}" value="${current}" data-input="${def.id}" aria-label="${def.label}" />
+                </div>
+                <div class="base-hint">보고서 기본값: ${formatControlValue(def.id, base)}</div>
+              </div>
+            `;
+          }).join('')}
+        </section>
+      `).join('');
+      refreshControlVisibility();
+    }
+
+    function refreshControls() {
+      document.querySelectorAll('[data-input]').forEach(input => {
+        const id = input.dataset.input;
+        if (state[id] !== undefined && document.activeElement !== input) {
+          input.value = state[id];
+        }
+      });
+      document.querySelectorAll('[data-control-badge]').forEach(badge => {
+        const id = badge.dataset.controlBadge;
+        badge.textContent = formatControlValue(id, state[id]);
+      });
+    }
+
+    function refreshControlVisibility() {
+      let firstVisible = null;
+      document.querySelectorAll('.control-group').forEach(group => {
+        const views = group.dataset.views.split(',');
+        const visible = views.includes(state.activeView);
+        group.style.display = visible ? 'block' : 'none';
+        if (visible && !firstVisible) firstVisible = group;
+      });
+      const currentGroup = firstVisible;
+      document.getElementById('controlModeLabel').textContent = currentGroup ? currentGroup.querySelector('h3').textContent : '입력값';
+      document.getElementById('controlScopeBadge').textContent = currentGroup ? currentGroup.dataset.scope : '기준값';
+    }
+
+    function refreshTabs() {
+      document.querySelectorAll('[data-view]').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.view === state.activeView);
+      });
+    }
+
+    function calcGpu(inputState = state, inputRacks = rackTypes) {
+      const utilization = inputState.utilizationPct / 100;
+      const revenueByRack = {};
+      const capexByRack = {};
+      const counts = {};
+      let annualRevenueEok = 0;
+      let itCapexEok = 0;
+      let usedItPower = 0;
+      let totalGpu = 0;
+      let totalFp4 = 0;
+
+      RACK_KEYS.forEach(key => {
+        const rack = inputRacks[key];
+        const count = getCountFromState(inputState, key);
+        counts[key] = count;
+        const revenue = count * rack.gpusPerRack * HOURS * utilization * rack.gpuHourlyRate / EOK;
+        const capex = count * rack.rackPriceUsd * inputState.fxKrwUsd / EOK;
+        revenueByRack[key] = revenue;
+        capexByRack[key] = capex;
+        annualRevenueEok += revenue;
+        itCapexEok += capex;
+        usedItPower += count * rack.rackPowerKw;
+        totalGpu += count * rack.gpusPerRack;
+        totalFp4 += count * rack.fp4Pflops;
+      });
+
+      const idleKw = inputState.itPowerKw - usedItPower;
+      const totalPowerKw = inputState.itPowerKw * inputState.pue;
+      const baseEok = totalPowerKw * inputState.basicChargeKwMonth * 12 / EOK;
+      const energyKwh = usedItPower * inputState.pue * HOURS * utilization;
+      const energyEok = energyKwh * inputState.energyCostRate / EOK;
+      const electricityEok = baseEok + energyEok;
+      const depRates = [inputState.depY1, inputState.depY2, inputState.depY3, inputState.depY4, inputState.depY5].map(value => value / 100);
+
+      const annualRevenue = Array(YEARS).fill(annualRevenueEok);
+      const annualExpense = Array.from({ length: YEARS }, (_, index) => {
+        const initialCapex = index === 0 ? itCapexEok + inputState.facilityCapexEok : 0;
+        return initialCapex + electricityEok + (itCapexEok * depRates[index]);
+      });
+
+      let sumR = 0;
+      let sumE = 0;
+      const cumRevenue = annualRevenue.map(value => (sumR += value));
+      const cumExpense = annualExpense.map(value => (sumE += value));
+      const cumProfit = cumRevenue.map((value, index) => value - cumExpense[index]);
+
+      return {
+        key: 'gpu',
+        counts,
+        revenueByRack,
+        capexByRack,
+        annualRevenue,
+        annualExpense,
+        cumRevenue,
+        cumExpense,
+        cumProfit,
+        usedItPower,
+        idleKw,
+        totalPowerKw,
+        baseEok,
+        energyEok,
+        electricityEok,
+        itCapexEok,
+        totalGpu,
+        totalFp4,
+        allocationPct: inputState.itPowerKw ? usedItPower / inputState.itPowerKw * 100 : 0
+      };
+    }
+
+    function calcColo(inputState = state) {
+      const utilization = inputState.utilizationPct / 100;
+      const totalPowerKw = inputState.itPowerKw * inputState.pue;
+      const colocationRevenueEok = inputState.itPowerKw * inputState.colocationFeeKwMonth * 12 / EOK;
+      const electricRevenueEok = totalPowerKw * HOURS * utilization * inputState.electricSaleRate / EOK;
+      const annualRevenueEok = colocationRevenueEok + electricRevenueEok;
+      const baseEok = totalPowerKw * inputState.basicChargeKwMonth * 12 / EOK;
+      const energyKwh = totalPowerKw * HOURS * utilization;
+      const energyEok = energyKwh * inputState.energyCostRate / EOK;
+      const electricityEok = baseEok + energyEok;
+
+      const annualRevenue = Array(YEARS).fill(annualRevenueEok);
+      const annualExpense = Array.from({ length: YEARS }, (_, index) => {
+        const initialCapex = index === 0 ? inputState.facilityCapexEok : 0;
+        return initialCapex + electricityEok;
+      });
+
+      let sumR = 0;
+      let sumE = 0;
+      const cumRevenue = annualRevenue.map(value => (sumR += value));
+      const cumExpense = annualExpense.map(value => (sumE += value));
+      const cumProfit = cumRevenue.map((value, index) => value - cumExpense[index]);
+
+      return {
+        key: 'colo',
+        annualRevenue,
+        annualExpense,
+        cumRevenue,
+        cumExpense,
+        cumProfit,
+        totalPowerKw,
+        colocationRevenueEok,
+        electricRevenueEok,
+        baseEok,
+        energyEok,
+        electricityEok
+      };
+    }
+
+    function makeBaselineState() {
+      const baseline = {
+        ...DEFAULTS,
+        racks_gb200: 0,
+        racks_gb300: 0,
+        racks_vr: 0
+      };
+      fillSelectedRack(baseline, RACK_DEFAULTS, 'veraRubin');
+      return baseline;
+    }
+
+    function getBaselineData(view) {
+      const baselineState = makeBaselineState();
+      return view === 'colo' ? calcColo(baselineState) : calcGpu(baselineState, RACK_DEFAULTS);
+    }
+
+    function getActiveData() {
+      return state.activeView === 'colo' ? calcColo() : calcGpu();
+    }
+
+    function getBreakEvenText(data) {
+      const index = data.cumProfit.findIndex(value => value >= 0);
+      return index >= 0 ? `BEP ${index + 1}년차` : '5년 내 BEP 미달';
+    }
+
+    function rackMixText(inputState = state) {
+      const parts = RACK_KEYS
+        .map(key => {
+          const count = getCountFromState(inputState, key);
+          return count > 0 ? `${rackTypes[key].shortLabel} ${count}대` : '';
+        })
+        .filter(Boolean);
+      return parts.length ? parts.join(' + ') : '랙 미선택';
+    }
+
+    function renderHero(gpuData) {
+      // 타이틀 영역의 현재 랙 프로필 패널을 제거했으므로 렌더링 동작은 유지하지 않습니다.
+    }
+
+    function renderCards(data) {
+      const root = document.getElementById('summaryCards');
+      const baseline = getBaselineData(state.activeView === 'colo' ? 'colo' : 'gpu');
+      const delta = data.annualRevenue[0] - baseline.annualRevenue[0];
+      const profit = data.cumProfit[YEARS - 1];
+      const deltaText = `${delta >= 0 ? '+' : ''}${eok(delta)}`;
+      const revenueHint = state.activeView === 'colo'
+        ? `상면 ${eok(data.colocationRevenueEok)} + 전기판매 ${eok(data.electricRevenueEok)}`
+        : `보고서 기본값 대비 ${deltaText}`;
+      const cumulativeHint = state.activeView === 'colo'
+        ? `IT 전력 ${nf.format(state.itPowerKw)}kW · PUE ${nf2.format(state.pue)}`
+        : `${rackMixText()} · 총 ${nf.format(Math.round(data.totalFp4))} PFLOPS`;
+      const expenseHint = data.key === 'gpu'
+        ? `IT CAPEX ${eok(data.itCapexEok)} + 시설 ${eok(state.facilityCapexEok)}`
+        : `시설 CAPEX ${eok(state.facilityCapexEok)} + 전기료 ${eok(data.electricityEok)}`;
+      const profitHint = `${getBreakEvenText(data)} · 누적 매출 대비 ${data.cumRevenue[YEARS - 1] ? pct(profit / data.cumRevenue[YEARS - 1] * 100, 1) : '0%'} `;
+
+      root.innerHTML = `
+        <article class="summary-card">
+          <span class="label">연간 매출</span>
+          <div class="value text-primary">${eok(data.annualRevenue[0])}</div>
+          <div class="hint">${revenueHint}</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 매출</span>
+          <div class="value text-primary">${eok(data.cumRevenue[YEARS - 1])}</div>
+          <div class="hint">${cumulativeHint}</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 지출</span>
+          <div class="value">${eok(data.cumExpense[YEARS - 1])}</div>
+          <div class="hint">${expenseHint}</div>
+        </article>
+        <article class="summary-card">
+          <span class="label">5년 누적 손익</span>
+          <div class="value ${profit >= 0 ? 'text-success' : 'text-danger'}">${eok(profit)}</div>
+          <div class="hint">${profitHint}</div>
+        </article>
+      `;
+    }
+
+    function renderRackSelector(data) {
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>랙 시스템 선택값</h2>
+              <p>보고서의 GB200·GB300·Vera Rubin 비교표 값을 기준으로 기본 전력·구매가·성능을 넣었습니다. 카드를 누르면 해당 랙으로 IT 전력 기준 내 최대 수량이 자동 배치됩니다.</p>
+            </div>
+            <button type="button" class="dark-pill" data-reset-selected>선택 랙 기준값 재적용</button>
+          </div>
+          <div class="rack-card-grid">
+            ${RACK_KEYS.map(key => {
+              const rack = rackTypes[key];
+              const active = key === state.selectedRack ? 'active' : '';
+              const maxCount = Math.floor(state.itPowerKw / rack.rackPowerKw);
+              return `
+                <button type="button" class="rack-select-card ${active}" data-select-rack="${key}" style="--rack-color:${rack.color}">
+                  <span class="rack-kicker">NVL72 · 최대 ${nf.format(maxCount)}대</span>
+                  <strong>${rack.label}</strong>
+                  <span class="rack-sub">${rack.processorText}</span>
+                  <div class="mini-specs">
+                    <span>랙당 전력<b>${nf.format(rack.rackPowerKw)}kW</b></span>
+                    <span>랙당 구매가<b>${usd(rack.rackPriceUsd)}</b></span>
+                    <span>기본 단가<b>${nf.format(rack.gpuHourlyRate)}원/hr</b></span>
+                    <span>FP4 성능<b>${nf.format(rack.fp4Pflops)} PFLOPS</b></span>
+                  </div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderRackAdjust(data) {
+      const usageWidth = Math.min(100, Math.max(0, data.allocationPct));
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>랙 구성 직접 조정</h2>
+              <p>랙 수량, 랙당 구매가, 랙당 전력, GPU 시간당 임대단가를 직접 바꿀 수 있습니다. 수량은 IT 전력 기준을 넘지 않도록 자동 보정됩니다.</p>
+            </div>
+          </div>
+          <div class="usage-strip">
+            <span>GPU 랙 전력 사용률</span>
+            <div class="meter"><span style="width:${usageWidth}%"></span></div>
+            <strong>${pct(data.allocationPct, 1)} (${nf.format(data.usedItPower)}kW / ${nf.format(state.itPowerKw)}kW)</strong>
+          </div>
+          <div class="rack-adjust-grid">
+            ${RACK_KEYS.map(key => {
+              const rack = rackTypes[key];
+              const count = getCountFromState(state, key);
+              const maxCount = maxCountForRack(key);
+              return `
+                <article class="rack-adjust-card" data-rack-card="${key}" style="--rack-color:${rack.color}">
+                  <div class="rack-adjust-title">
+                    <strong>${rack.shortLabel}</strong>
+                    <span class="count-chip">${nf.format(count)}대</span>
+                  </div>
+                  <div class="rack-count-control">
+                    <input type="range" min="0" max="${maxCount}" step="1" value="${count}" data-rack-count="${key}" />
+                    <input type="number" min="0" max="${maxCount}" step="1" value="${count}" data-rack-count="${key}" aria-label="${rack.shortLabel} 랙 수량" />
+                  </div>
+                  <div class="spec-grid">
+                    <div class="spec-input">
+                      <label>랙당 구매가(USD)</label>
+                      <input type="number" min="0" step="1000" value="${rack.rackPriceUsd}" data-rack-key="${key}" data-rack-prop="rackPriceUsd" />
+                      <div class="krw-hint">${formatKrwAmount(rack.rackPriceUsd * state.fxKrwUsd)}</div>
+                    </div>
+                    <div class="spec-input">
+                      <label>랙당 전력(kW)</label>
+                      <input type="number" min="1" step="1" value="${rack.rackPowerKw}" data-rack-key="${key}" data-rack-prop="rackPowerKw" />
+                    </div>
+                    <div class="spec-input">
+                      <label>GPU 시간당 임대단가(원/hr)</label>
+                      <input type="number" min="0" step="500" value="${rack.gpuHourlyRate}" data-rack-key="${key}" data-rack-prop="gpuHourlyRate" />
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderChartPanel() {
+      return `
+        <section class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <h2>5개년 누적 추이</h2>
+              <p>누적 매출, 누적 지출, 누적 손익을 같은 축에서 비교합니다.</p>
+            </div>
+          </div>
+          <div class="chart-wrap" id="chartWrap"></div>
+          <div class="legend" id="legend"></div>
+        </section>
+      `;
+    }
+
+    function renderFormulaPanel(data) {
+      const isGpu = data.key === 'gpu';
+      const selected = rackTypes[state.selectedRack];
+      const usagePct = isGpu ? data.allocationPct : 100;
+      const usageText = isGpu
+        ? `GPU 랙 전력 사용률: ${pct(data.allocationPct, 1)} (${rackMixText()} / IT 전력 ${nf.format(state.itPowerKw)}kW)`
+        : `상면 과금 기준: IT 전력 ${nf.format(state.itPowerKw)}kW, 수전전력 ${nf.format(data.totalPowerKw)}kW(PUE ${nf2.format(state.pue)})`;
+      const headline = isGpu
+        ? `현재 기준: 선택 랙은 ${selected.label}이며, ${rackMixText()} 구성입니다. 랙당 전력 ${nf.format(selected.rackPowerKw)}kW, 랙당 구매가 ${usd(selected.rackPriceUsd)}, 기본 임대단가 ${nf.format(selected.gpuHourlyRate)}원/hr를 반영해 연매출 ${eok(data.annualRevenue[0])}, IT 장비 CAPEX ${eok(data.itCapexEok)}, 전기료 ${eok(data.electricityEok)}로 계산합니다.`
+        : `현재 기준: 상면임대 모델은 IT 전력 ${nf.format(state.itPowerKw)}kW, 상면요율 ${nf.format(state.colocationFeeKwMonth)}원/kW·월, 전기 판매단가 ${nf1.format(state.electricSaleRate)}원/kWh를 반영해 연매출 ${eok(data.annualRevenue[0])}, 전기료 ${eok(data.electricityEok)}로 계산합니다.`;
+
+      return `
+        <section class="panel formula-panel">
+          <div class="panel-head">
+            <div>
+              <h2>산식 및 기준값</h2>
+              <p>입력값과 랙 기본 스펙이 어떤 산식으로 매출·지출에 반영되는지 확인할 수 있습니다. GPU 임대단가와 랙 스펙은 직접 조정 가능합니다.</p>
+            </div>
+          </div>
+
+          <div class="basis-alert">
+            <p><strong>${headline}</strong></p>
+            <div class="usage-strip" style="margin:0; background:rgba(255,255,255,0.58); border-color:rgba(245,158,11,0.22)">
+              <span>${isGpu ? '전력 배치 현황' : '상면 과금 현황'}</span>
+              <div class="meter"><span style="width:${Math.min(100, Math.max(0, usagePct))}%"></span></div>
+              <strong>${usageText}</strong>
+            </div>
+            <div class="basis-chips">
+              <span>목표 가동률 ${state.utilizationPct}%</span>
+              <span>PUE ${nf2.format(state.pue)}</span>
+              <span>시설 CAPEX ${eok(state.facilityCapexEok)}</span>
+              <span>전력량 단가 ${nf1.format(state.energyCostRate)}원/kWh</span>
+              <span>기본요금 ${nf.format(state.basicChargeKwMonth)}원/kW·월</span>
+              ${isGpu ? `<span>환율 ${nf.format(state.fxKrwUsd)}원/USD</span><span>감가상각 ${state.depY1}/${state.depY2}/${state.depY3}/${state.depY4}/${state.depY5}%</span>` : `<span>상면요율 ${nf.format(state.colocationFeeKwMonth)}원/kW·월</span><span>전기판매 ${nf1.format(state.electricSaleRate)}원/kWh</span>`}
+            </div>
+          </div>
+
+          <div class="formula-grid">
+            <article class="formula-card">
+              <h3>GPUaaS 연매출</h3>
+              <p><code>Σ(랙 수 × 랙당 GPU 수 × 8,760시간 × 가동률 × GPU 시간당 단가)</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>상면임대 연매출</h3>
+              <p><code>IT 전력(kW) × 상면요율 × 12개월 + 수전전력(kW) × 8,760시간 × 가동률 × 전기 판매단가</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>IT 장비 CAPEX</h3>
+              <p><code>Σ(랙 수 × 선택 랙당 구매가(USD) × 환율)</code></p>
+            </article>
+            <article class="formula-card">
+              <h3>전기료</h3>
+              <p><code>수전전력(kW) × 기본요금 × 12 + 사용전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTableHtml(data) {
+      const rows = Array.from({ length: YEARS }, (_, index) => {
+        const annualProfit = data.annualRevenue[index] - data.annualExpense[index];
+        const margin = data.annualRevenue[index] ? annualProfit / data.annualRevenue[index] * 100 : 0;
+        return `
+          <tr>
+            <td><strong>${index + 1}년차</strong></td>
+            <td>${eok(data.annualRevenue[index])}</td>
+            <td>${eok(data.annualExpense[index])}</td>
+            <td class="${annualProfit >= 0 ? 'text-success' : 'text-danger'}">${eok(annualProfit)}</td>
+            <td>${eok(data.cumRevenue[index])}</td>
+            <td>${eok(data.cumExpense[index])}</td>
+            <td class="${data.cumProfit[index] >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(data.cumProfit[index])}</strong></td>
+            <td>${pct(margin, 1)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      return `
+        <section class="panel table-panel">
+          <div class="panel-head">
+            <div>
+              <h2>연차별 수익구조</h2>
+              <p>연도별 매출·지출·손익과 누적 손익을 표로 확인합니다.</p>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>연차</th>
+                  <th>연매출</th>
+                  <th>연지출</th>
+                  <th>연손익</th>
+                  <th>누적매출</th>
+                  <th>누적지출</th>
+                  <th>누적손익</th>
+                  <th>연간 손익률</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function getComparisonRows() {
+      return RACK_KEYS.map(key => {
+        const compareState = {
+          ...state,
+          selectedRack: key,
+          racks_gb200: 0,
+          racks_gb300: 0,
+          racks_vr: 0
+        };
+        fillSelectedRack(compareState, rackTypes, key);
+        const data = calcGpu(compareState, rackTypes);
+        return { key, rack: rackTypes[key], state: compareState, data };
+      });
+    }
+
+    function renderComparePanel() {
+      const rows = getComparisonRows();
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>모델 비교</h2>
+              <p>동일한 IT 전력·가동률·전력 단가를 적용했을 때 랙별 최대 수용 수량과 5년 누적 손익을 비교합니다.</p>
+            </div>
+          </div>
+          <div class="compare-summary">
+            ${rows.map(item => {
+              const active = item.key === state.selectedRack ? 'active' : '';
+              return `
+                <article class="compare-card ${active}" style="--rack-color:${item.rack.color}">
+                  <h3>${item.rack.label}</h3>
+                  <p>${item.rack.processorText}</p>
+                  <div class="compare-metric">
+                    <span>수용 랙 수<b>${nf.format(getCountFromState(item.state, item.key))}대</b></span>
+                    <span>전력 사용률<b>${pct(item.data.allocationPct, 1)}</b></span>
+                    <span>연매출<b>${eok(item.data.annualRevenue[0])}</b></span>
+                    <span>5년 손익<b class="${item.data.cumProfit[YEARS - 1] >= 0 ? 'text-success' : 'text-danger'}">${eok(item.data.cumProfit[YEARS - 1])}</b></span>
+                  </div>
+                  <button type="button" data-select-rack="${item.key}">이 모델로 적용</button>
+                </article>
+              `;
+            }).join('')}
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>랙 모델</th>
+                  <th>최대 수량</th>
+                  <th>총 GPU</th>
+                  <th>총 FP4</th>
+                  <th>연매출</th>
+                  <th>IT CAPEX</th>
+                  <th>5년 누적 지출</th>
+                  <th>5년 누적 손익</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(item => `
+                  <tr>
+                    <td><strong>${item.rack.label}</strong></td>
+                    <td>${nf.format(getCountFromState(item.state, item.key))}대</td>
+                    <td>${nf.format(item.data.totalGpu)} GPU</td>
+                    <td>${nf.format(Math.round(item.data.totalFp4))} PFLOPS</td>
+                    <td>${eok(item.data.annualRevenue[0])}</td>
+                    <td>${eok(item.data.itCapexEok)}</td>
+                    <td>${eok(item.data.cumExpense[YEARS - 1])}</td>
+                    <td class="${item.data.cumProfit[YEARS - 1] >= 0 ? 'text-success' : 'text-danger'}"><strong>${eok(item.data.cumProfit[YEARS - 1])}</strong></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderChart(data) {
+      const wrap = document.getElementById('chartWrap');
+      const legend = document.getElementById('legend');
+      if (!wrap || !legend) return;
+
+      const width = 860;
+      const height = 300;
+      const pad = { left: 76, right: 24, top: 24, bottom: 38 };
+      const values = [...data.cumRevenue, ...data.cumExpense, ...data.cumProfit, 0];
+      let min = Math.min(...values);
+      let max = Math.max(...values);
+      if (max === min) {
+        max += 10;
+        min -= 10;
+      }
+      const range = max - min;
+      max += range * 0.12;
+      min -= range * 0.12;
+
+      const x = index => pad.left + index * ((width - pad.left - pad.right) / (YEARS - 1));
+      const y = value => pad.top + (max - value) * ((height - pad.top - pad.bottom) / (max - min));
+
+      let grid = '';
+      for (let index = 0; index <= 4; index++) {
+        const value = min + (max - min) * (index / 4);
+        const yy = y(value);
+        grid += `<line class="gridline" x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}"></line>`;
+        grid += `<text class="tick" x="${pad.left - 12}" y="${yy + 4}" text-anchor="end">${eokAxis(value)}</text>`;
+      }
+
+      const zeroY = y(0);
+      if (zeroY >= pad.top && zeroY <= height - pad.bottom) {
+        grid += `<line class="gridline zero" x1="${pad.left}" y1="${zeroY}" x2="${width - pad.right}" y2="${zeroY}"></line>`;
+      }
+
+      const xTicks = Array.from({ length: YEARS }, (_, index) => `
+        <text class="tick" x="${x(index)}" y="${height - 8}" text-anchor="middle">${index + 1}년차</text>
+      `).join('');
+
+      const series = [
+        { data: data.cumRevenue, cls: 'revenue', name: '누적 매출', color: 'var(--primary)' },
+        { data: data.cumExpense, cls: 'expense', name: '누적 지출', color: '#f59e0b' },
+        { data: data.cumProfit, cls: 'profit', name: '누적 손익', color: 'var(--success)' }
+      ];
+
+      const paths = series.map(item => {
+        const points = item.data.map((value, index) => `${x(index)},${y(value)}`).join(' ');
+        const dots = item.data.map((value, index) => `<circle class="dot ${item.cls}" cx="${x(index)}" cy="${y(value)}" data-series="${item.cls}" data-index="${index}"></circle>`).join('');
+        return `<polyline class="line ${item.cls}" points="${points}"></polyline>${dots}`;
+      }).join('');
+
+      const hoverLines = Array.from({ length: YEARS }, (_, index) => `
+        <line class="hover-line" data-hover-index="${index}" x1="${x(index)}" y1="${pad.top}" x2="${x(index)}" y2="${height - pad.bottom}"></line>
+      `).join('');
+
+      const zoneWidth = (width - pad.left - pad.right) / YEARS;
+      const hoverZones = Array.from({ length: YEARS }, (_, index) => {
+        const zoneX = Math.max(pad.left, x(index) - zoneWidth / 2);
+        return `<rect class="hover-zone" data-hover-index="${index}" x="${zoneX}" y="${pad.top}" width="${zoneWidth}" height="${height - pad.top - pad.bottom}"></rect>`;
+      }).join('');
+
+      wrap.innerHTML = `
+        <svg class="chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${YEARS}개년 누적 추이 차트">
+          ${grid}
+          <line class="axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}"></line>
+          <line class="axis" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}"></line>
+          ${paths}
+          ${hoverLines}
+          ${hoverZones}
+          ${xTicks}
+        </svg>
+        <div class="chart-tooltip" id="chartTooltip"></div>
+      `;
+      legend.innerHTML = series.map(item => `
+        <div class="legend-item"><span class="swatch" style="background:${item.color}"></span>${item.name}</div>
+      `).join('');
+
+      attachChartHover(wrap, data, series);
+    }
+
+    function attachChartHover(wrap, data, series) {
+      const tooltip = wrap.querySelector('#chartTooltip');
+      const zones = wrap.querySelectorAll('.hover-zone');
+      if (!tooltip || !zones.length) return;
+
+      const showIndex = index => {
+        wrap.querySelectorAll('.hover-line').forEach(line => {
+          line.style.opacity = Number(line.dataset.hoverIndex) === index ? '1' : '0';
+        });
+        wrap.querySelectorAll('.dot').forEach(dot => {
+          dot.classList.toggle('hover-active', Number(dot.dataset.index) === index);
+        });
+
+        const annualProfit = data.annualRevenue[index] - data.annualExpense[index];
+        tooltip.innerHTML = `
+          <div class="tt-title">${index + 1}년차</div>
+          <div class="tt-row"><span class="tt-dot" style="background:${series[0].color}"></span>누적매출<b>${eok(data.cumRevenue[index])}</b></div>
+          <div class="tt-row"><span class="tt-dot" style="background:${series[1].color}"></span>누적지출<b>${eok(data.cumExpense[index])}</b></div>
+          <div class="tt-row"><span class="tt-dot" style="background:${series[2].color}"></span>누적손익<b>${eok(data.cumProfit[index])}</b></div>
+          <div class="tt-row" style="opacity:0.7"><span class="tt-dot" style="background:transparent"></span>연손익<b>${eok(annualProfit)}</b></div>
+        `;
+        tooltip.classList.add('visible');
+      };
+
+      const positionTooltip = event => {
+        const wrapRect = wrap.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        let left = event.clientX - wrapRect.left + 16;
+        let top = event.clientY - wrapRect.top - tooltipRect.height - 14;
+        if (left + tooltipRect.width > wrapRect.width) left = event.clientX - wrapRect.left - tooltipRect.width - 16;
+        if (top < 0) top = event.clientY - wrapRect.top + 18;
+        tooltip.style.transform = `translate(${Math.max(0, left)}px, ${Math.max(0, top)}px)`;
+      };
+
+      const hideTooltip = () => {
+        tooltip.classList.remove('visible');
+        wrap.querySelectorAll('.hover-line').forEach(line => { line.style.opacity = '0'; });
+        wrap.querySelectorAll('.dot').forEach(dot => dot.classList.remove('hover-active'));
+      };
+
+      zones.forEach(zone => {
+        const index = Number(zone.dataset.hoverIndex);
+        zone.addEventListener('mouseenter', event => { showIndex(index); positionTooltip(event); });
+        zone.addEventListener('mousemove', positionTooltip);
+        zone.addEventListener('mouseleave', hideTooltip);
+        zone.addEventListener('touchstart', event => { showIndex(index); positionTooltip(event.touches[0]); }, { passive: true });
+      });
+
+      wrap.addEventListener('mouseleave', hideTooltip);
+    }
+
+    function renderMainContent(data) {
+      const content = document.getElementById('mainContent');
+      if (state.activeView === 'compare') {
+        const gpuData = calcGpu();
+        content.innerHTML = `
+          ${renderComparePanel()}
+          ${renderChartPanel()}
+          ${renderFormulaPanel(gpuData)}
+          ${renderTableHtml(gpuData)}
+        `;
+        renderChart(gpuData);
+        return;
+      }
+
+      if (state.activeView === 'gpu') {
+        content.innerHTML = `
+          ${renderRackSelector(data)}
+          ${renderRackAdjust(data)}
+          ${renderChartPanel()}
+          ${renderFormulaPanel(data)}
+          ${renderTableHtml(data)}
+        `;
+        renderChart(data);
+        return;
+      }
+
+      content.innerHTML = `
+        ${renderChartPanel()}
+        ${renderFormulaPanel(data)}
+        ${renderTableHtml(data)}
+      `;
+      renderChart(data);
+    }
+
+    function render() {
+      refreshTabs();
+      refreshControlVisibility();
+      refreshControls();
+      const data = getActiveData();
+      const gpuData = calcGpu();
+      renderHero(gpuData);
+      renderCards(data);
+      renderMainContent(data);
+    }
+
+    function selectRack(key) {
+      if (!RACK_KEYS.includes(key)) return;
+      fillSelectedRack(state, rackTypes, key);
+      if (state.activeView === 'colo') state.activeView = 'gpu';
+      render();
+    }
+
+    function resetSelectedRackDefaults() {
+      const key = state.selectedRack;
+      rackTypes[key] = { ...RACK_DEFAULTS[key] };
+      if (isPureSelectedMix()) fillSelectedRack(state, rackTypes, key);
+      else enforcePowerCap();
+      render();
+    }
+
+    function applyScenario(type) {
+      const currentView = state.activeView;
+      rackTypes = cloneRacks(RACK_DEFAULTS);
+      state = {
+        ...DEFAULTS,
+        activeView: currentView,
+        selectedRack: 'veraRubin',
+        racks_gb200: 0,
+        racks_gb300: 0,
+        racks_vr: 0
+      };
+
+      if (type === 'conservative') {
+        Object.assign(state, {
+          utilizationPct: 65,
+          pue: 1.35,
+          facilityCapexEok: 300,
+          energyCostRate: 140,
+          basicChargeKwMonth: 11000,
+          fxKrwUsd: 1550,
+          colocationFeeKwMonth: 115000,
+          electricSaleRate: 155
+        });
+        RACK_KEYS.forEach(key => {
+          rackTypes[key].gpuHourlyRate = Math.round(RACK_DEFAULTS[key].gpuHourlyRate * 0.9);
+        });
+      }
+
+      if (type === 'aggressive') {
+        Object.assign(state, {
+          utilizationPct: 90,
+          pue: 1.18,
+          facilityCapexEok: 240,
+          energyCostRate: 110,
+          basicChargeKwMonth: 9000,
+          fxKrwUsd: 1450,
+          colocationFeeKwMonth: 145000,
+          electricSaleRate: 185
+        });
+        RACK_KEYS.forEach(key => {
+          rackTypes[key].gpuHourlyRate = Math.round(RACK_DEFAULTS[key].gpuHourlyRate * 1.1);
+        });
+      }
+
+      fillSelectedRack(state, rackTypes, state.selectedRack);
+      buildControls();
+      render();
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? '');
+      if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+      return text;
+    }
+
+    function exportCurrentTable() {
+      const data = getActiveData();
+      const modeName = state.activeView === 'colo' ? '상면임대' : '서버/GPU 임대';
+      const header = ['모델', '연차', '연매출(억원)', '연지출(억원)', '연손익(억원)', '누적매출(억원)', '누적지출(억원)', '누적손익(억원)', '연간 손익률(%)'];
+      const rows = Array.from({ length: YEARS }, (_, index) => {
+        const annualProfit = data.annualRevenue[index] - data.annualExpense[index];
+        const margin = data.annualRevenue[index] ? annualProfit / data.annualRevenue[index] * 100 : 0;
+        return [
+          modeName,
+          `${index + 1}년차`,
+          data.annualRevenue[index].toFixed(2),
+          data.annualExpense[index].toFixed(2),
+          annualProfit.toFixed(2),
+          data.cumRevenue[index].toFixed(2),
+          data.cumExpense[index].toFixed(2),
+          data.cumProfit[index].toFixed(2),
+          margin.toFixed(2)
+        ];
+      });
+      const csv = [header, ...rows].map(row => row.map(csvEscape).join(',')).join('\n');
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const today = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `aidc_revenue_${state.activeView}_${today}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function readNumericInput(input) {
+      const raw = String(input.value ?? '').trim();
+      if (raw === '' || raw === '-' || raw === '+' || raw === '.' || raw === '-.' || raw === '+.') return null;
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function applyRackCountInput(input, finalize = false) {
+      const countKey = input.dataset.rackCount;
+      if (!countKey) return false;
+      const value = readNumericInput(input);
+      if (value === null) return false;
+      state.selectedRack = countKey;
+      setCountForState(state, countKey, value);
+      enforcePowerCap(countKey);
+      if (finalize) input.value = getCountFromState(state, countKey);
+      return true;
+    }
+
+    function applyRackSpecInput(input, finalize = false) {
+      const rackKey = input.dataset.rackKey;
+      const rackProp = input.dataset.rackProp;
+      if (!rackKey || !rackProp || !rackTypes[rackKey]) return false;
+      const value = readNumericInput(input);
+      if (value === null) return false;
+
+      let normalized = value;
+      if (rackProp === 'rackPowerKw') normalized = Math.max(1, normalized);
+      if (rackProp === 'rackPriceUsd' || rackProp === 'gpuHourlyRate') normalized = Math.max(0, normalized);
+
+      rackTypes[rackKey][rackProp] = normalized;
+
+      if (rackProp === 'rackPowerKw') {
+        if (isPureSelectedMix()) fillSelectedRack(state, rackTypes, state.selectedRack);
+        else enforcePowerCap(rackKey);
+      }
+
+      if (finalize) input.value = rackTypes[rackKey][rackProp];
+      return true;
+    }
+
+    function syncRackAdjustLive(activeInput = document.activeElement) {
+      if (state.activeView !== 'gpu') return;
+
+      const data = calcGpu();
+      const usageWidth = Math.min(100, Math.max(0, data.allocationPct));
+      const meterFill = document.querySelector('.usage-strip .meter span');
+      const usageValue = document.querySelector('.usage-strip strong');
+      if (meterFill) meterFill.style.width = `${usageWidth}%`;
+      if (usageValue) usageValue.textContent = `${pct(data.allocationPct, 1)} (${nf.format(data.usedItPower)}kW / ${nf.format(state.itPowerKw)}kW)`;
+
+      RACK_KEYS.forEach(key => {
+        const rack = rackTypes[key];
+        const count = getCountFromState(state, key);
+        const maxCount = maxCountForRack(key);
+        const card = document.querySelector(`[data-rack-card="${key}"]`);
+        if (!card) return;
+
+        const countChip = card.querySelector('.count-chip');
+        if (countChip) countChip.textContent = `${nf.format(count)}대`;
+
+        card.querySelectorAll(`[data-rack-count="${key}"]`).forEach(control => {
+          control.max = maxCount;
+          if (control === activeInput && control.type === 'number') return;
+          control.value = count;
+        });
+
+        card.querySelectorAll(`[data-rack-key="${key}"]`).forEach(control => {
+          const prop = control.dataset.rackProp;
+          if (!prop || !(prop in rack)) return;
+          if (control === activeInput) return;
+          control.value = rack[prop];
+        });
+
+        const priceInput = card.querySelector(`[data-rack-key="${key}"][data-rack-prop="rackPriceUsd"]`);
+        const krwHint = priceInput ? priceInput.closest('.spec-input')?.querySelector('.krw-hint') : null;
+        if (krwHint) krwHint.textContent = formatKrwAmount(rack.rackPriceUsd * state.fxKrwUsd);
+      });
+    }
+
+    let liveMetricsFrame = null;
+    function refreshLiveRackMetrics(activeInput = document.activeElement) {
+      syncRackAdjustLive(activeInput);
+      if (liveMetricsFrame) cancelAnimationFrame(liveMetricsFrame);
+      liveMetricsFrame = requestAnimationFrame(() => {
+        liveMetricsFrame = null;
+        const data = getActiveData();
+        renderCards(data);
+        if (document.getElementById('chartWrap')) renderChart(data);
+      });
+    }
+
+    document.addEventListener('input', event => {
+      const countKey = event.target.dataset.rackCount;
+      if (countKey) {
+        if (applyRackCountInput(event.target)) refreshLiveRackMetrics(event.target);
+        return;
+      }
+
+      const rackKey = event.target.dataset.rackKey;
+      const rackProp = event.target.dataset.rackProp;
+      if (rackKey && rackProp && rackTypes[rackKey]) {
+        if (applyRackSpecInput(event.target)) refreshLiveRackMetrics(event.target);
+        return;
+      }
+
+      const inputId = event.target.dataset.input;
+      if (inputId) {
+        const def = getControlDef(inputId);
+        let value = Number(event.target.value);
+        if (def) {
+          if (Number.isFinite(def.min)) value = Math.max(def.min, value);
+          if (Number.isFinite(def.max)) value = Math.min(def.max, value);
+        }
+        state[inputId] = value;
+        if (inputId === 'itPowerKw') handleItPowerChange();
+        refreshControls();
+        render();
+      }
+    });
+
+    document.addEventListener('change', event => {
+      const countKey = event.target.dataset.rackCount;
+      if (countKey) {
+        applyRackCountInput(event.target, true);
+        render();
+        return;
+      }
+
+      const rackKey = event.target.dataset.rackKey;
+      const rackProp = event.target.dataset.rackProp;
+      if (rackKey && rackProp && rackTypes[rackKey]) {
+        applyRackSpecInput(event.target, true);
+        render();
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+      if (event.target.dataset.rackCount || (event.target.dataset.rackKey && event.target.dataset.rackProp)) {
+        event.target.blur();
+      }
+    });
+
+    document.addEventListener('click', event => {
+      const viewButton = event.target.closest('[data-view]');
+      if (viewButton) {
+        state.activeView = viewButton.dataset.view;
+        render();
+        return;
+      }
+
+      const scenarioButton = event.target.closest('[data-scenario]');
+      if (scenarioButton) {
+        applyScenario(scenarioButton.dataset.scenario);
+        return;
+      }
+
+      const rackButton = event.target.closest('[data-select-rack]');
+      if (rackButton) {
+        selectRack(rackButton.dataset.selectRack);
+        return;
+      }
+
+      if (event.target.closest('[data-reset-selected]')) {
+        resetSelectedRackDefaults();
+        return;
+      }
+
+      if (event.target.closest('[data-export]')) {
+        exportCurrentTable();
+      }
+    });
+
+    fillSelectedRack(state, rackTypes, state.selectedRack);
+    buildControls();
+    render();
+  </script>
+
+
+</body></html>
