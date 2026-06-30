@@ -1027,18 +1027,18 @@
                 <div class="control-item">
                   <div class="control-meta">
                     <label for="control_depY4">4년차 감가상각률</label>
-                    <span class="control-value" data-control-badge="depY4">20%</span>
+                    <span class="control-value" data-control-badge="depY4">10%</span>
                   </div>
-                  <input id="control_depY4" type="number" min="0" max="100" step="1" value="20" data-input="depY4">
+                  <input id="control_depY4" type="number" min="0" max="100" step="1" value="10" data-input="depY4">
                   <div class="base-hint">보고서 기본값: 20%</div>
                 </div>
               
                 <div class="control-item">
                   <div class="control-meta">
                     <label for="control_depY5">5년차 감가상각률</label>
-                    <span class="control-value" data-control-badge="depY5">30%</span>
+                    <span class="control-value" data-control-badge="depY5">10%</span>
                   </div>
-                  <input id="control_depY5" type="number" min="0" max="100" step="1" value="30" data-input="depY5">
+                  <input id="control_depY5" type="number" min="0" max="100" step="1" value="10" data-input="depY5">
                   <div class="base-hint">보고서 기본값: 30%</div>
                 </div>
               
@@ -1475,13 +1475,21 @@
       depY1: 0,
       depY2: 0,
       depY3: 10,
-      depY4: 20,
-      depY5: 30,
+      depY4: 10,
+      depY5: 10,
       colocationFeeKwMonth: 130000,
       electricSaleRate: 170.1
     };
 
     const controlGroups = [
+      {
+        title: '환율 설정',
+        scope: 'GPU 모델',
+        views: ['gpu', 'compare'],
+        controls: [
+          { id: 'fxKrwUsd', label: '환율', suffix: '원/USD', min: 1000, max: 1800, step: 10, digits: 0 }
+        ]
+      },
       {
         title: '공통 전력·운영 기준',
         scope: '두 모델 공통',
@@ -1500,7 +1508,6 @@
         scope: 'GPU 모델',
         views: ['gpu', 'compare'],
         controls: [
-          { id: 'fxKrwUsd', label: '환율', suffix: '원/USD', min: 1000, max: 1800, step: 10, digits: 0 },
           { id: 'depY1', label: '1년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
           { id: 'depY2', label: '2년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
           { id: 'depY3', label: '3년차 감가상각률', suffix: '%', min: 0, max: 100, step: 1, digits: 0, numberOnly: true },
@@ -1753,7 +1760,7 @@
       const idleKw = inputState.itPowerKw - usedItPower;
       const totalPowerKw = inputState.itPowerKw * inputState.pue;
       const baseEok = totalPowerKw * inputState.basicChargeKwMonth * 12 / EOK;
-      const energyKwh = usedItPower * inputState.pue * HOURS * utilization;
+      const energyKwh = inputState.itPowerKw * inputState.pue * HOURS * utilization;
       const energyEok = energyKwh * inputState.energyCostRate / EOK;
       const electricityEok = baseEok + energyEok;
       const depRates = [inputState.depY1, inputState.depY2, inputState.depY3, inputState.depY4, inputState.depY5].map(value => value / 100);
