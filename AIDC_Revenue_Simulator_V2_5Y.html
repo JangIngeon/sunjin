@@ -900,11 +900,28 @@
         <div class="panel-heading">
           <h2>입력값 조정</h2>
           <div class="panel-pill-row">
-            <span id="controlModeLabel">공통 전력·운영 기준</span>
-            <span class="soft-badge" id="controlScopeBadge">두 모델 공통</span>
+            <span id="controlModeLabel">환율 설정</span>
+            <span class="soft-badge" id="controlScopeBadge">GPU 모델</span>
           </div>
         </div>
         <div class="controls-root" id="controlsRoot">
+        <section class="control-group" data-views="gpu,compare" data-scope="GPU 모델" style="display: block;">
+          <h3>환율 설정</h3>
+          
+              <div class="control-item">
+                <div class="control-meta">
+                  <label for="control_fxKrwUsd_range">환율</label>
+                  <span class="control-value" data-control-badge="fxKrwUsd">1,500원/USD</span>
+                </div>
+                <div class="control-field">
+                  <input id="control_fxKrwUsd_range" type="range" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd">
+                  <input type="number" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd" aria-label="환율">
+                </div>
+                <div class="base-hint">보고서 기본값: 1,500원/USD</div>
+              </div>
+            
+        </section>
+      
         <section class="control-group" data-views="gpu,colo,compare" data-scope="두 모델 공통" style="display: block;">
           <h3>공통 전력·운영 기준</h3>
           
@@ -985,18 +1002,6 @@
         <section class="control-group" data-views="gpu,compare" data-scope="GPU 모델" style="display: block;">
           <h3>GPUaaS 상세 설정</h3>
           
-              <div class="control-item">
-                <div class="control-meta">
-                  <label for="control_fxKrwUsd_range">환율</label>
-                  <span class="control-value" data-control-badge="fxKrwUsd">1,500원/USD</span>
-                </div>
-                <div class="control-field">
-                  <input id="control_fxKrwUsd_range" type="range" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd">
-                  <input type="number" min="1000" max="1800" step="10" value="1500" data-input="fxKrwUsd" aria-label="환율">
-                </div>
-                <div class="base-hint">보고서 기본값: 1,500원/USD</div>
-              </div>
-            
                 <div class="control-item">
                   <div class="control-meta">
                     <label for="control_depY1">1년차 감가상각률</label>
@@ -1030,7 +1035,7 @@
                     <span class="control-value" data-control-badge="depY4">10%</span>
                   </div>
                   <input id="control_depY4" type="number" min="0" max="100" step="1" value="10" data-input="depY4">
-                  <div class="base-hint">보고서 기본값: 20%</div>
+                  <div class="base-hint">보고서 기본값: 10%</div>
                 </div>
               
                 <div class="control-item">
@@ -1039,7 +1044,7 @@
                     <span class="control-value" data-control-badge="depY5">10%</span>
                   </div>
                   <input id="control_depY5" type="number" min="0" max="100" step="1" value="10" data-input="depY5">
-                  <div class="base-hint">보고서 기본값: 30%</div>
+                  <div class="base-hint">보고서 기본값: 10%</div>
                 </div>
               
         </section>
@@ -1089,13 +1094,13 @@
         </article>
         <article class="summary-card">
           <span class="label">5년 누적 지출</span>
-          <div class="value">2,258억</div>
+          <div class="value">1,912억</div>
           <div class="hint">IT CAPEX 1,170억 + 시설 270억</div>
         </article>
         <article class="summary-card">
           <span class="label">5년 누적 손익</span>
-          <div class="value text-success">10,356억</div>
-          <div class="hint">BEP 1년차 · 누적 매출 대비 82.1% </div>
+          <div class="value text-success">10,702억</div>
+          <div class="hint">BEP 1년차 · 누적 매출 대비 84.8% </div>
         </article>
       </section>
         <div id="mainContent">
@@ -1258,7 +1263,19 @@
           <line class="gridline" x1="76" y1="262" x2="836" y2="262"></line><text class="tick" x="64" y="266" text-anchor="end">-1,514억</text><line class="gridline" x1="76" y1="202.5" x2="836" y2="202.5"></line><text class="tick" x="64" y="206.5" text-anchor="end">2,397억</text><line class="gridline" x1="76" y1="143" x2="836" y2="143"></line><text class="tick" x="64" y="147" text-anchor="end">6,307억</text><line class="gridline" x1="76" y1="83.5" x2="836" y2="83.5"></line><text class="tick" x="64" y="87.5" text-anchor="end">10,218억</text><line class="gridline" x1="76" y1="24" x2="836" y2="24"></line><text class="tick" x="64" y="28" text-anchor="end">14,128억</text><line class="gridline zero" x1="76" y1="238.9677419354839" x2="836" y2="238.9677419354839"></line>
           <line class="axis" x1="76" y1="262" x2="836" y2="262"></line>
           <line class="axis" x1="76" y1="24" x2="76" y2="262"></line>
-          <polyline class="line revenue" points="76,200.58064516129033 266,162.1935483870968 456,123.80645161290323 646,85.41935483870968 836,47.032258064516114"></polyline><circle class="dot revenue" cx="76" cy="200.58064516129033"></circle><circle class="dot revenue" cx="266" cy="162.1935483870968"></circle><circle class="dot revenue" cx="456" cy="123.80645161290323"></circle><circle class="dot revenue" cx="646" cy="85.41935483870968"></circle><circle class="dot revenue" cx="836" cy="47.032258064516114"></circle><polyline class="line expense" points="76,216.70431603359603 266,216.3513334959739 456,214.21812743500516 646,210.30469785068988 836,204.61104474302795"></polyline><circle class="dot expense" cx="76" cy="216.70431603359603"></circle><circle class="dot expense" cx="266" cy="216.3513334959739"></circle><circle class="dot expense" cx="456" cy="214.21812743500516"></circle><circle class="dot expense" cx="646" cy="210.30469785068988"></circle><circle class="dot expense" cx="836" cy="204.61104474302795"></circle><polyline class="line profit" points="76,222.8440710631782 266,184.80995682660676 456,148.55606611338197 646,114.0823989235037 836,81.38895525697205"></polyline><circle class="dot profit" cx="76" cy="222.8440710631782"></circle><circle class="dot profit" cx="266" cy="184.80995682660676"></circle><circle class="dot profit" cx="456" cy="148.55606611338197"></circle><circle class="dot profit" cx="646" cy="114.0823989235037"></circle><circle class="dot profit" cx="836" cy="81.38895525697205"></circle>
+          <polyline class="line revenue" points="76,200.58064516129033 266,162.1935483870968 456,123.80645161290323 646,85.41935483870968 836,47.032258064516114"></polyline><circle class="dot revenue" cx="76" cy="200.58064516129033" data-series="revenue" data-index="0"></circle><circle class="dot revenue" cx="266" cy="162.1935483870968" data-series="revenue" data-index="1"></circle><circle class="dot revenue" cx="456" cy="123.80645161290323" data-series="revenue" data-index="2"></circle><circle class="dot revenue" cx="646" cy="85.41935483870968" data-series="revenue" data-index="3"></circle><circle class="dot revenue" cx="836" cy="47.032258064516114" data-series="revenue" data-index="4"></circle><polyline class="line expense" points="76,216.68809481943833 266,216.31889106765848 456,214.16946379253207 646,212.02003651740563 836,209.8706092422792"></polyline><circle class="dot expense" cx="76" cy="216.68809481943833" data-series="expense" data-index="0"></circle><circle class="dot expense" cx="266" cy="216.31889106765848" data-series="expense" data-index="1"></circle><circle class="dot expense" cx="456" cy="214.16946379253207" data-series="expense" data-index="2"></circle><circle class="dot expense" cx="646" cy="212.02003651740563" data-series="expense" data-index="3"></circle><circle class="dot expense" cx="836" cy="209.8706092422792" data-series="expense" data-index="4"></circle><polyline class="line profit" points="76,222.86029227733593 266,184.84239925492219 456,148.6047297558551 646,112.36706025678794 836,76.12939075772083"></polyline><circle class="dot profit" cx="76" cy="222.86029227733593" data-series="profit" data-index="0"></circle><circle class="dot profit" cx="266" cy="184.84239925492219" data-series="profit" data-index="1"></circle><circle class="dot profit" cx="456" cy="148.6047297558551" data-series="profit" data-index="2"></circle><circle class="dot profit" cx="646" cy="112.36706025678794" data-series="profit" data-index="3"></circle><circle class="dot profit" cx="836" cy="76.12939075772083" data-series="profit" data-index="4"></circle>
+          
+        <line class="hover-line" data-hover-index="0" x1="76" y1="24" x2="76" y2="262"></line>
+      
+        <line class="hover-line" data-hover-index="1" x1="266" y1="24" x2="266" y2="262"></line>
+      
+        <line class="hover-line" data-hover-index="2" x1="456" y1="24" x2="456" y2="262"></line>
+      
+        <line class="hover-line" data-hover-index="3" x1="646" y1="24" x2="646" y2="262"></line>
+      
+        <line class="hover-line" data-hover-index="4" x1="836" y1="24" x2="836" y2="262"></line>
+      
+          <rect class="hover-zone" data-hover-index="0" x="76" y="24" width="152" height="238"></rect><rect class="hover-zone" data-hover-index="1" x="190" y="24" width="152" height="238"></rect><rect class="hover-zone" data-hover-index="2" x="380" y="24" width="152" height="238"></rect><rect class="hover-zone" data-hover-index="3" x="570" y="24" width="152" height="238"></rect><rect class="hover-zone" data-hover-index="4" x="760" y="24" width="152" height="238"></rect>
           
         <text class="tick" x="76" y="292" text-anchor="middle">1년차</text>
       
@@ -1271,6 +1288,7 @@
         <text class="tick" x="836" y="292" text-anchor="middle">5년차</text>
       
         </svg>
+        <div class="chart-tooltip" id="chartTooltip"></div>
       </div>
           <div class="legend" id="legend">
         <div class="legend-item"><span class="swatch" style="background:var(--primary)"></span>누적 매출</div>
@@ -1291,7 +1309,7 @@
           </div>
 
           <div class="basis-alert">
-            <p><strong>현재 기준: 선택 랙은 Vera Rubin NVL72이며, Vera Rubin 10대 구성입니다. 랙당 전력 190kW, 랙당 구매가 $7,800,000, 기본 임대단가 50,000원/hr를 반영해 연매출 2,523억, IT 장비 CAPEX 1,170억, 전기료 23.2억로 계산합니다.</strong></p>
+            <p><strong>현재 기준: 선택 랙은 Vera Rubin NVL72이며, Vera Rubin 10대 구성입니다. 랙당 전력 190kW, 랙당 구매가 $7,800,000, 기본 임대단가 50,000원/hr를 반영해 연매출 2,523억, IT 장비 CAPEX 1,170억, 전기료 24.3억로 계산합니다.</strong></p>
             <div class="usage-strip" style="margin:0; background:rgba(255,255,255,0.58); border-color:rgba(245,158,11,0.22)">
               <span>전력 배치 현황</span>
               <div class="meter"><span style="width:95%"></span></div>
@@ -1303,7 +1321,7 @@
               <span>시설 CAPEX 270억</span>
               <span>전력량 단가 121.7원/kWh</span>
               <span>기본요금 9,810원/kW·월</span>
-              <span>환율 1,500원/USD</span><span>감가상각 0/0/10/20/30%</span>
+              <span>환율 1,500원/USD</span><span>감가상각 0/0/10/10/10%</span>
             </div>
           </div>
 
@@ -1353,56 +1371,56 @@
           <tr>
             <td><strong>1년차</strong></td>
             <td>2,523억</td>
-            <td>1,463억</td>
-            <td class="text-success">1,060억</td>
+            <td>1,464억</td>
+            <td class="text-success">1,059억</td>
             <td>2,523억</td>
-            <td>1,463억</td>
-            <td class="text-success"><strong>1,060억</strong></td>
+            <td>1,464억</td>
+            <td class="text-success"><strong>1,059억</strong></td>
             <td>42%</td>
           </tr>
         
           <tr>
             <td><strong>2년차</strong></td>
             <td>2,523억</td>
-            <td>23.2억</td>
-            <td class="text-success">2,500억</td>
+            <td>24.3억</td>
+            <td class="text-success">2,499억</td>
             <td>5,046억</td>
-            <td>1,486억</td>
-            <td class="text-success"><strong>3,559억</strong></td>
-            <td>99.1%</td>
+            <td>1,489억</td>
+            <td class="text-success"><strong>3,557억</strong></td>
+            <td>99%</td>
           </tr>
         
           <tr>
             <td><strong>3년차</strong></td>
             <td>2,523억</td>
-            <td>140.2억</td>
-            <td class="text-success">2,383억</td>
+            <td>141.3억</td>
+            <td class="text-success">2,382억</td>
             <td>7,569억</td>
-            <td>1,627억</td>
-            <td class="text-success"><strong>5,942억</strong></td>
+            <td>1,630억</td>
+            <td class="text-success"><strong>5,939억</strong></td>
             <td>94.4%</td>
           </tr>
         
           <tr>
             <td><strong>4년차</strong></td>
             <td>2,523억</td>
-            <td>257.2억</td>
-            <td class="text-success">2,266억</td>
+            <td>141.3억</td>
+            <td class="text-success">2,382억</td>
             <td>10,092억</td>
-            <td>1,884억</td>
-            <td class="text-success"><strong>8,208억</strong></td>
-            <td>89.8%</td>
+            <td>1,771억</td>
+            <td class="text-success"><strong>8,320억</strong></td>
+            <td>94.4%</td>
           </tr>
         
           <tr>
             <td><strong>5년차</strong></td>
             <td>2,523억</td>
-            <td>374.2억</td>
-            <td class="text-success">2,149억</td>
+            <td>141.3억</td>
+            <td class="text-success">2,382억</td>
             <td>12,614억</td>
-            <td>2,258억</td>
-            <td class="text-success"><strong>10,356억</strong></td>
-            <td>85.2%</td>
+            <td>1,912억</td>
+            <td class="text-success"><strong>10,702억</strong></td>
+            <td>94.4%</td>
           </tr>
         </tbody>
             </table>
@@ -2660,6 +2678,7 @@
     buildControls();
     render();
   </script>
+
 
 
 </body></html>
