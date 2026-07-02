@@ -76,9 +76,7 @@
       align-items: center;
       color: #fff;
       background:
-        radial-gradient(circle at 42% 106%, rgba(40, 214, 179, 0.30) 0 18%, transparent 19%),
-        radial-gradient(circle at 102% 0%, rgba(100, 87, 255, 0.46) 0 25%, transparent 26%),
-        linear-gradient(135deg, var(--hero-1) 0%, var(--hero-2) 50%, var(--hero-4) 100%);
+        linear-gradient(135deg, #ee7700 0%, #ee7700 50%, #ee7700 100%);                          /* 이것만 남김 */
       box-shadow: var(--shadow-hero);
     }
     .hero::before {
@@ -149,6 +147,19 @@
       border: 1px solid rgba(255, 255, 255, 0.36);
       background: rgba(255, 255, 255, 0.13);
       backdrop-filter: blur(10px);
+    }
+
+    .hero-sunjin {
+      position: absolute;
+      top: 18px;
+      right: 60px;
+      z-index: 2;
+      color: #ffffff;
+      font-size: 40px;
+      font-weight: 950;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.25);
     }
 
     .view-tabs {
@@ -785,6 +796,219 @@
     tbody tr:last-child td { border-bottom: 0; }
     td strong { font-weight: 950; }
 
+    /* 수정1: 시설 유형 토글 */
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      background: #eef2fb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .segmented-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 10px;
+      padding: 9px 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+    .segmented-btn:hover { color: var(--primary-strong); }
+    .segmented-btn.active {
+      background: #fff;
+      color: var(--primary-strong);
+      border-color: var(--border-strong);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.14);
+    }
+
+    /* 수정1: 시설비 세부 내역표 */
+    .facility-table td, .facility-table th { font-weight: 800; }
+    .facility-table .fac-num { text-align: right; }
+    /* 수정: 표 1행(헤더) 전체 왼쪽 정렬 */
+    .facility-table thead th,
+    .facility-table thead th.fac-num { text-align: left; }
+    .facility-table td.fac-active,
+    .facility-table th.fac-active {
+      background: var(--primary-soft);
+      color: var(--primary-strong);
+    }
+    .facility-table th.fac-active { color: var(--primary-strong); }
+    .facility-table .fac-note {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: normal;
+      min-width: 340px;
+      max-width: 420px;
+      line-height: 1.5;
+    }
+    /* 수정: 2~6행 1열(상세내역 카테고리) 왼쪽·세로 가운데 정렬 */
+    .facility-table td.fac-cat { vertical-align: middle; text-align: left; }
+    .facility-table .fac-note-head {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--text-soft);
+      letter-spacing: 0.02em;
+      margin-bottom: 3px;
+    }
+    .facility-table .fac-detail-list {
+      margin: 0 0 8px;
+      padding-left: 16px;
+    }
+    .facility-table .fac-detail-list li {
+      margin: 2px 0;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .facility-table .fac-cost-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+    .facility-table .fac-cost-label.same { background: #eef2f7; color: #6b7688; }
+    .facility-table .fac-cost-label.save { background: var(--success-soft); color: var(--success); }
+    .facility-table .fac-logic {
+      color: var(--text-muted);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .facility-table .fac-diff {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .facility-table .fac-diff.same { background: #eef2f7; color: #8a94a6; }
+    .facility-table .fac-diff.save { background: var(--success-soft); color: var(--success); }
+    .facility-table .fac-total td {
+      border-top: 2px solid var(--border-strong);
+      background: #fbfcfe;
+      font-size: 14px;
+    }
+    .fac-pill {
+      align-self: flex-start;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .fac-pill.remodel { background: var(--success-soft); color: var(--success); }
+    .fac-pill.newbuild { background: var(--primary-soft); color: var(--primary-strong); }
+    .fac-pill.custom { background: var(--warning-soft); color: var(--warning); }
+    .mod-tag {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: var(--warning-soft);
+      color: var(--warning);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* 연차별 목표 가동률 컨트롤 */
+    .util-years {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .util-year {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 8px;
+      background: #f4f7fd;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: help;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .util-year:hover {
+      border-color: var(--primary);
+      background: #eef0ff;
+    }
+    .util-year-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .util-year-field {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      background: #fff;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 6px 8px;
+    }
+    .util-year-field input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      text-align: right;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text-main);
+      -moz-appearance: textfield;
+    }
+    .util-year-field input::-webkit-outer-spin-button,
+    .util-year-field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .util-year-suffix { font-size: 12px; font-weight: 800; color: var(--text-soft); }
+    .util-hint-icon {
+      display: inline-block;
+      margin-left: 4px;
+      width: 15px;
+      height: 15px;
+      line-height: 15px;
+      text-align: center;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary-strong);
+      font-size: 10px;
+      font-weight: 900;
+      cursor: help;
+    }
+    /* 연차 가동률 호버 팝업 (차트 툴팁과 동일 톤) */
+    .util-tip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 260px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: #111827;
+      color: #fff;
+      font-size: 12px;
+      box-shadow: 0 14px 30px rgba(17, 24, 39, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+    }
+    .util-tip.visible { opacity: 1; }
+    .util-tip .tt-title {
+      font-size: 12px;
+      font-weight: 950;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+    .util-tip .tt-desc {
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
     .compare-summary {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -884,8 +1108,9 @@
 <body>
   <div class="app-shell">
     <header class="hero">
+      <div class="hero-sunjin">SUNJIN</div>
       <div class="hero-copy">
-        <div class="eyebrow">AIDC Revenue Simulator V2</div>
+        <div class="eyebrow">AIDC Revenue Simulator</div>
         <h1>AIDC Rack 시스템 별<br>데이터센터 수익구조 시뮬레이션</h1>
         <p>
           서버/GPU 임대, 상면임대, 모델 비교를 한 화면에서 조정합니다.<br>
@@ -919,21 +1144,41 @@
         <section class="control-group" data-views="gpu,colo,compare" data-scope="두 모델 공통" style="display: block;">
           <h3>공통 전력·운영 기준</h3>
           
-              <div class="control-item">
-                <div class="control-meta">
-                  <label for="control_utilizationPct_range">목표 가동률</label>
-                  <div class="control-value-wrap">
-                    <span class="control-value" data-control-badge="utilizationPct">80%</span>
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label>목표 가동률 <span class="util-hint-icon" title="각 연차에 커서를 올리면 설명이 표시됩니다">ⓘ</span></label>
+                    <span class="control-value" data-util-avg="">3년 평균 77%</span>
+                  </div>
+                  <div class="util-years">
+                    
+                      <div class="util-year" data-util-year="1">
+                        <span class="util-year-label">1년차</span>
+                        <div class="util-year-field">
+                          <input type="number" min="0" max="100" step="1" value="60" data-input="utilY1" aria-label="1년차 가동률">
+                          <span class="util-year-suffix">%</span>
+                        </div>
+                      </div>
+                    
+                      <div class="util-year" data-util-year="2">
+                        <span class="util-year-label">2년차</span>
+                        <div class="util-year-field">
+                          <input type="number" min="0" max="100" step="1" value="90" data-input="utilY2" aria-label="2년차 가동률">
+                          <span class="util-year-suffix">%</span>
+                        </div>
+                      </div>
+                    
+                      <div class="util-year" data-util-year="3">
+                        <span class="util-year-label">3년차</span>
+                        <div class="util-year-field">
+                          <input type="number" min="0" max="100" step="1" value="80" data-input="utilY3" aria-label="3년차 가동률">
+                          <span class="util-year-suffix">%</span>
+                        </div>
+                      </div>
                     
                   </div>
+                  <div class="base-hint">1년차 램프업 60% · 2년차 피크 90% · 3년차 보수적 하락 80% (연차별 가동률 시나리오)</div>
                 </div>
-                <div class="control-field">
-                  <input id="control_utilizationPct_range" type="range" min="10" max="100" step="1" value="80" data-input="utilizationPct">
-                  <input type="number" min="10" max="100" step="1" value="80" data-input="utilizationPct" aria-label="목표 가동률">
-                </div>
-                <div class="base-hint">보고서 기본값: 80%</div>
-              </div>
-            
+              
                 <div class="control-item">
                   <div class="control-meta">
                     <label for="control_totalPowerKw">총 수전용량</label>
@@ -956,6 +1201,21 @@
                   </div>
                   <input id="control_itPowerKw" type="number" min="1" max="20000" step="10" value="2000" data-input="itPowerKw">
                   <div class="base-hint">보고서 기본값: 2,000kW</div>
+                </div>
+              
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label>시설 유형 (신축/리모델링)</label>
+                    <span class="control-value" data-construction-badge="">리모델링</span>
+                  </div>
+                  <div class="segmented" role="group" aria-label="시설 유형 (신축/리모델링)">
+                    
+                      <button type="button" class="segmented-btn " data-construction="newbuild">신축 350억</button>
+                    
+                      <button type="button" class="segmented-btn active" data-construction="remodel">리모델링 270억</button>
+                    
+                  </div>
+                  <div class="base-hint">신축 350억 · 리모델링 270억 (리모델링 시 신축 대비 약 23% 절감)</div>
                 </div>
               
               <div class="control-item">
@@ -990,7 +1250,7 @@
             
               <div class="control-item">
                 <div class="control-meta">
-                  <label for="control_basicChargeKwMonth_range">기본요금 단가</label>
+                  <label for="control_basicChargeKwMonth_range">전기기본요금 단가</label>
                   <div class="control-value-wrap">
                     <span class="control-value" data-control-badge="basicChargeKwMonth">9,810원/kW·월</span>
                     
@@ -998,7 +1258,7 @@
                 </div>
                 <div class="control-field">
                   <input id="control_basicChargeKwMonth_range" type="range" min="0" max="30000" step="100" value="9810" data-input="basicChargeKwMonth">
-                  <input type="number" min="0" max="30000" step="100" value="9810" data-input="basicChargeKwMonth" aria-label="기본요금 단가">
+                  <input type="number" min="0" max="30000" step="100" value="9810" data-input="basicChargeKwMonth" aria-label="전기기본요금 단가">
                 </div>
                 <div class="base-hint">보고서 기본값: 9,810원/kW·월</div>
               </div>
@@ -1102,23 +1362,23 @@
         <section class="summary-grid" id="summaryCards" aria-label="매출 요약">
         <article class="summary-card">
           <span class="label">연간 매출</span>
-          <div class="value text-primary">2,523억</div>
+          <div class="value text-primary">1,892억</div>
           <div class="hint">보고서 기본값 대비 +0억</div>
         </article>
         <article class="summary-card">
           <span class="label">3년 누적 매출</span>
-          <div class="value text-primary">7,569억</div>
+          <div class="value text-primary">7,253억</div>
           <div class="hint">Vera Rubin 10대 · 총 36,000 PFLOPS</div>
         </article>
         <article class="summary-card">
           <span class="label">3년 누적 지출</span>
-          <div class="value">3,826억</div>
+          <div class="value">3,824억</div>
           <div class="hint">IT CAPEX 1,170억 + 시설 270억</div>
         </article>
         <article class="summary-card">
           <span class="label">3년 누적 손익</span>
-          <div class="value text-success">3,742억</div>
-          <div class="hint">BEP 1년차 · 누적 매출 대비 49.4% </div>
+          <div class="value text-success">3,430억</div>
+          <div class="hint">BEP 1년차 · 누적 매출 대비 47.3% </div>
         </article>
       </section>
         <div id="mainContent">
@@ -1278,10 +1538,10 @@
           </div>
           <div class="chart-wrap" id="chartWrap">
         <svg class="chart" viewBox="0 0 860 300" role="img" aria-label="3년 누적 추이 차트">
-          <line class="gridline" x1="76" y1="262" x2="836" y2="262"></line><text class="tick" x="64" y="266" text-anchor="end">-908.2억</text><line class="gridline" x1="76" y1="202.49999999999997" x2="836" y2="202.49999999999997"></line><text class="tick" x="64" y="206.49999999999997" text-anchor="end">1,438억</text><line class="gridline" x1="76" y1="143" x2="836" y2="143"></line><text class="tick" x="64" y="147" text-anchor="end">3,784억</text><line class="gridline" x1="76" y1="83.49999999999997" x2="836" y2="83.49999999999997"></line><text class="tick" x="64" y="87.49999999999997" text-anchor="end">6,131억</text><line class="gridline" x1="76" y1="24" x2="836" y2="24"></line><text class="tick" x="64" y="28" text-anchor="end">8,477억</text><line class="gridline zero" x1="76" y1="238.96774193548384" x2="836" y2="238.96774193548384"></line>
+          <line class="gridline" x1="76" y1="262" x2="836" y2="262"></line><text class="tick" x="64" y="266" text-anchor="end">-870.4억</text><line class="gridline" x1="76" y1="202.5" x2="836" y2="202.5"></line><text class="tick" x="64" y="206.5" text-anchor="end">1,378억</text><line class="gridline" x1="76" y1="143.00000000000003" x2="836" y2="143.00000000000003"></line><text class="tick" x="64" y="147.00000000000003" text-anchor="end">3,627억</text><line class="gridline" x1="76" y1="83.50000000000001" x2="836" y2="83.50000000000001"></line><text class="tick" x="64" y="87.50000000000001" text-anchor="end">5,875억</text><line class="gridline" x1="76" y1="24.000000000000025" x2="836" y2="24.000000000000025"></line><text class="tick" x="64" y="28.000000000000025" text-anchor="end">8,124억</text><line class="gridline zero" x1="76" y1="238.96774193548387" x2="836" y2="238.96774193548387"></line>
           <line class="axis" x1="76" y1="262" x2="836" y2="262"></line>
           <line class="axis" x1="76" y1="24" x2="76" y2="262"></line>
-          <polyline class="line revenue" points="76,174.98924731182794 456,111.01075268817203 836,47.032258064516114"></polyline><circle class="dot revenue" cx="76" cy="174.98924731182794" data-series="revenue" data-index="0"></circle><circle class="dot revenue" cx="456" cy="111.01075268817203" data-series="revenue" data-index="1"></circle><circle class="dot revenue" cx="836" cy="47.032258064516114" data-series="revenue" data-index="2"></circle><polyline class="line expense" points="76,192.07080272059784 456,171.90003973441512 836,141.93804736982617"></polyline><circle class="dot expense" cx="76" cy="192.07080272059784" data-series="expense" data-index="0"></circle><circle class="dot expense" cx="456" cy="171.90003973441512" data-series="expense" data-index="1"></circle><circle class="dot expense" cx="836" cy="141.93804736982617" data-series="expense" data-index="2"></circle><polyline class="line profit" points="76,221.88618652671394 456,178.07845488924076 836,144.06195263017378"></polyline><circle class="dot profit" cx="76" cy="221.88618652671394" data-series="profit" data-index="0"></circle><circle class="dot profit" cx="456" cy="178.07845488924076" data-series="profit" data-index="1"></circle><circle class="dot profit" cx="836" cy="144.06195263017378" data-series="profit" data-index="2"></circle>
+          <polyline class="line revenue" points="76,188.8976157082749 456,113.79242636746145 836,47.03225806451614"></polyline><circle class="dot revenue" cx="76" cy="188.8976157082749" data-series="revenue" data-index="0"></circle><circle class="dot revenue" cx="456" cy="113.79242636746145" data-series="revenue" data-index="1"></circle><circle class="dot revenue" cx="836" cy="47.03225806451614" data-series="revenue" data-index="2"></circle><polyline class="line expense" points="76,190.16580669777517 456,169.05105334936792 836,137.78636566457945"></polyline><circle class="dot expense" cx="76" cy="190.16580669777517" data-series="expense" data-index="0"></circle><circle class="dot expense" cx="456" cy="169.05105334936792" data-series="expense" data-index="1"></circle><circle class="dot expense" cx="836" cy="137.78636566457945" data-series="expense" data-index="2"></circle><polyline class="line profit" points="76,237.69955094598362 456,183.7091149535774 836,148.21363433542058"></polyline><circle class="dot profit" cx="76" cy="237.69955094598362" data-series="profit" data-index="0"></circle><circle class="dot profit" cx="456" cy="183.7091149535774" data-series="profit" data-index="1"></circle><circle class="dot profit" cx="836" cy="148.21363433542058" data-series="profit" data-index="2"></circle>
           
         <line class="hover-line" data-hover-index="0" x1="76" y1="24" x2="76" y2="262"></line>
       
@@ -1319,20 +1579,20 @@
           </div>
 
           <div class="basis-alert">
-            <p><strong>현재 기준: 선택 랙은 Vera Rubin NVL72이며, Vera Rubin 10대 구성입니다. 랙당 전력 190kW, 랙당 구매가 $7,800,000, 기본 임대단가 50,000원/hr를 반영해 연매출 2,523억, IT 장비 CAPEX 1,170억, 전기료 23.2억로 계산합니다.</strong></p>
+            <p><strong>현재 기준: 선택 랙은 Vera Rubin NVL72이며, Vera Rubin 10대 구성입니다. 랙당 전력 190kW, 랙당 구매가 $7,800,000, 기본 임대단가 50,000원/hr를 반영해 연매출 1,892억, IT 장비 CAPEX 1,170억, 전기료 22.4억로 계산합니다.</strong></p>
             <div class="usage-strip" style="margin:0; background:rgba(255,255,255,0.58); border-color:rgba(245,158,11,0.22)">
               <span>전력 배치 현황</span>
               <div class="meter"><span style="width:95%"></span></div>
               <strong>GPU 랙 전력 사용률: 95% (Vera Rubin 10대 / IT 수전용량 2,000kW)</strong>
             </div>
             <div class="basis-chips">
-              <span>목표 가동률 80%</span>
+              <span>연차 가동률 60·90·80%</span>
               <span>총 수전용량 2,500kW</span>
               <span>IT 수전용량 2,000kW</span>
               <span>PUE 1.25</span>
               <span>시설 CAPEX 270억</span>
               <span>전력량 단가 121.7원/kWh</span>
-              <span>기본요금 9,810원/kW·월</span>
+              <span>전기기본요금 9,810원/kW·월</span>
               <span>환율 1,500원/USD</span><span>감가상각 33/66/99%</span>
             </div>
           </div>
@@ -1352,8 +1612,107 @@
             </article>
             <article class="formula-card">
               <h3>전기료</h3>
-              <p><code>총 수전용량(kW) × 기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
+              <p><code>총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
             </article>
+          </div>
+        </section>
+      
+          
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>CAPEX 시설비 세부 내역</h2>
+              <p>신축·리모델링 기준 시설비 계산표입니다. 상단 '시설 유형' 토글로 전환하면 시설 CAPEX가 자동 반영됩니다. 전력·공조·통신 설비는 신축 여부와 무관하게 동일하며, 절감은 건축/토목·설계/간접비에서 발생합니다.</p>
+            </div>
+            <span class="fac-pill remodel">리모델링 적용 중 · 270억</span>
+          </div>
+          <div class="table-scroll">
+            <table class="facility-table">
+              <thead>
+                <tr>
+                  <th>상세내역</th>
+                  <th class="fac-num ">신축 예산</th>
+                  <th class="fac-num fac-active">리모델링 예산</th>
+                  <th class="fac-num">증감</th>
+                  <th>비고 (세부 내역 및 원가 조정 논리)</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+        <tr>
+          <td class="fac-cat"><strong>전력설비</strong></td>
+          <td class="fac-num ">94.5억</td>
+          <td class="fac-num fac-active">94.5억</td>
+          <td class="fac-num"><span class="fac-diff same">동일</span></td>
+          <td class="fac-note">
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list"><li>수배전반, 변압기, 이중화된 무정전 전원장치(UPS)</li><li>비상발전기, ATS/CTTS, 배터리 뱅크</li><li>간선 케이블 및 버스바(Busbar)</li></ul>
+        <div class="fac-cost-label same">[비용 100% 동일]</div>
+        <div class="fac-logic">2.5MW 특고압 수배전반 및 UPS, 배터리 등 핵심 설비는 신축 여부와 무관하게 동일 용량 투입</div>
+      </td>
+        </tr>
+      
+        <tr>
+          <td class="fac-cat"><strong>공조/냉각설비</strong></td>
+          <td class="fac-num ">67.5억</td>
+          <td class="fac-num fac-active">67.5억</td>
+          <td class="fac-num"><span class="fac-diff same">동일</span></td>
+          <td class="fac-note">
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list"><li>고효율 냉동기, 냉각탑, 항온항습기(CRAH)</li><li>다이렉트 액체 냉각(DLC) 분배 장치(CDU) 및 배관</li><li>외기 냉각(Free Cooling) 시스템 및 차폐(Containment) 설비</li></ul>
+        <div class="fac-cost-label same">[비용 100% 동일]</div>
+        <div class="fac-logic">초고밀도 랙 발열 제어 및 PUE 1.25 달성을 위한 DLC(액체 냉각) 시스템 전액 반영</div>
+      </td>
+        </tr>
+      
+        <tr>
+          <td class="fac-cat"><strong>건축/토목</strong></td>
+          <td class="fac-num ">108억</td>
+          <td class="fac-num fac-active">54억</td>
+          <td class="fac-num"><span class="fac-diff save">-50%</span></td>
+          <td class="fac-note">
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list"><li>1,000~1,500kg/m² 이상의 고하중 슬래브 구조 보강</li><li>이중마루(Access Floor), 단열 및 방수 공사</li><li>하역장 및 반입구 구조물 공사</li></ul>
+        <div class="fac-cost-label save">[비용 절감]</div>
+        <div class="fac-logic">기존 뼈대 100% 재활용. 터파기/외장 공사 생략 후 순수 하중 보강(3,000kg/㎡) 및 이중마루 구축 비용만 적용</div>
+      </td>
+        </tr>
+      
+        <tr>
+          <td class="fac-cat"><strong>통신/소방/보안</strong></td>
+          <td class="fac-num ">27억</td>
+          <td class="fac-num fac-active">27억</td>
+          <td class="fac-num"><span class="fac-diff same">동일</span></td>
+          <td class="fac-note">
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list"><li>광케이블 트레이 및 Meet-Me-Room(MMR) 설비</li><li>가스계 소화설비(IG-541, Novec 등) 및 조기 화재 감지기(VESDA)</li><li>출입 통제, CCTV, DCIM(인프라 관리 시스템) 구축</li></ul>
+        <div class="fac-cost-label same">[비용 100% 동일]</div>
+        <div class="fac-logic">가스계 소화설비, 조기 화재 감지, 광케이블 인프라 등 데이터센터 필수 안전 시설 동일 적용</div>
+      </td>
+        </tr>
+      
+        <tr>
+          <td class="fac-cat"><strong>설계/감리/간접비</strong></td>
+          <td class="fac-num ">53억</td>
+          <td class="fac-num fac-active">27억</td>
+          <td class="fac-num"><span class="fac-diff save">-49%</span></td>
+          <td class="fac-note">
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list"><li>개념 설계, 기본/실시 설계비</li><li>건설 사업 관리(PM/CM) 및 책임 감리비</li><li>인허가 비용 및 예비비(Contingency)</li></ul>
+        <div class="fac-cost-label save">[비용 절감]</div>
+        <div class="fac-logic">대규모 건축 인허가 절차 생략 및 총공사비 축소에 따른 엔지니어링 용역 요율 하향 연동</div>
+      </td>
+        </tr>
+      
+                <tr class="fac-total">
+                  <td><strong>총 CAPEX</strong></td>
+                  <td class="fac-num "><strong>350억</strong></td>
+                  <td class="fac-num fac-active"><strong>270억</strong></td>
+                  <td class="fac-num"><span class="fac-diff save">-23%</span></td>
+                  <td class="fac-note"><div class="fac-logic">리모델링의 경우 신축(350억) 대비 총 80억 원(약 23%)이 절감됩니다.</div></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
       
@@ -1382,24 +1741,24 @@
               <tbody>
           <tr>
             <td><strong>1년차</strong></td>
-            <td>2,523억</td>
-            <td>1,849억</td>
-            <td class="text-success">673.6억</td>
-            <td>2,523억</td>
-            <td>1,849억</td>
-            <td class="text-success"><strong>673.6억</strong></td>
-            <td>26.7%</td>
+            <td>1,892억</td>
+            <td>1,844억</td>
+            <td class="text-success">47.9억</td>
+            <td>1,892억</td>
+            <td>1,844억</td>
+            <td class="text-success"><strong>47.9억</strong></td>
+            <td>2.5%</td>
           </tr>
         
           <tr>
             <td><strong>2년차</strong></td>
-            <td>2,523억</td>
-            <td>795.4억</td>
-            <td class="text-success">1,727억</td>
-            <td>5,046억</td>
-            <td>2,645억</td>
-            <td class="text-success"><strong>2,401억</strong></td>
-            <td>68.5%</td>
+            <td>2,838억</td>
+            <td>797.9억</td>
+            <td class="text-success">2,040억</td>
+            <td>4,730억</td>
+            <td>2,642억</td>
+            <td class="text-success"><strong>2,088억</strong></td>
+            <td>71.9%</td>
           </tr>
         
           <tr>
@@ -1407,9 +1766,9 @@
             <td>2,523억</td>
             <td>1,181억</td>
             <td class="text-success">1,341억</td>
-            <td>7,569억</td>
-            <td>3,826억</td>
-            <td class="text-success"><strong>3,742억</strong></td>
+            <td>7,253억</td>
+            <td>3,824억</td>
+            <td class="text-success"><strong>3,430억</strong></td>
             <td>53.2%</td>
           </tr>
         </tbody>
@@ -1473,7 +1832,9 @@
     const DEFAULTS = {
       activeView: 'gpu',
       selectedRack: 'veraRubin',
-      utilizationPct: 80,
+      utilY1: 60,
+      utilY2: 90,
+      utilY3: 80,
       totalPowerKw: 2500,
       itPowerKw: 2000,
       facilityCapexEok: 270,
@@ -1484,8 +1845,73 @@
       depY2: 66,
       depY3: 99,
       colocationFeeKwMonth: 130000,
-      electricSaleRate: 170.1
+      electricSaleRate: 170.1,
+      constructionType: 'remodel'
     };
+
+    // CAPEX 시설비 <신축 및 리모델링 기준 시설비 계산표> — 단위: 억 원
+    const FACILITY_CAPEX = {
+      categories: [
+        {
+          key: 'electrical', label: '전력설비', newbuild: 94.5, remodel: 94.5,
+          details: ['수배전반, 변압기, 이중화된 무정전 전원장치(UPS)', '비상발전기, ATS/CTTS, 배터리 뱅크', '간선 케이블 및 버스바(Busbar)'],
+          costLabel: '비용 100% 동일',
+          logic: '2.5MW 특고압 수배전반 및 UPS, 배터리 등 핵심 설비는 신축 여부와 무관하게 동일 용량 투입'
+        },
+        {
+          key: 'mechanical', label: '공조/냉각설비', newbuild: 67.5, remodel: 67.5,
+          details: ['고효율 냉동기, 냉각탑, 항온항습기(CRAH)', '다이렉트 액체 냉각(DLC) 분배 장치(CDU) 및 배관', '외기 냉각(Free Cooling) 시스템 및 차폐(Containment) 설비'],
+          costLabel: '비용 100% 동일',
+          logic: '초고밀도 랙 발열 제어 및 PUE 1.25 달성을 위한 DLC(액체 냉각) 시스템 전액 반영'
+        },
+        {
+          key: 'architecture', label: '건축/토목', newbuild: 108.0, remodel: 54.0,
+          details: ['1,000~1,500kg/m² 이상의 고하중 슬래브 구조 보강', '이중마루(Access Floor), 단열 및 방수 공사', '하역장 및 반입구 구조물 공사'],
+          costLabel: '비용 절감',
+          logic: '기존 뼈대 100% 재활용. 터파기/외장 공사 생략 후 순수 하중 보강(3,000kg/㎡) 및 이중마루 구축 비용만 적용'
+        },
+        {
+          key: 'lowVoltage', label: '통신/소방/보안', newbuild: 27.0, remodel: 27.0,
+          details: ['광케이블 트레이 및 Meet-Me-Room(MMR) 설비', '가스계 소화설비(IG-541, Novec 등) 및 조기 화재 감지기(VESDA)', '출입 통제, CCTV, DCIM(인프라 관리 시스템) 구축'],
+          costLabel: '비용 100% 동일',
+          logic: '가스계 소화설비, 조기 화재 감지, 광케이블 인프라 등 데이터센터 필수 안전 시설 동일 적용'
+        },
+        {
+          key: 'softCosts', label: '설계/감리/간접비', newbuild: 53.0, remodel: 27.0,
+          details: ['개념 설계, 기본/실시 설계비', '건설 사업 관리(PM/CM) 및 책임 감리비', '인허가 비용 및 예비비(Contingency)'],
+          costLabel: '비용 절감',
+          logic: '대규모 건축 인허가 절차 생략 및 총공사비 축소에 따른 엔지니어링 용역 요율 하향 연동'
+        }
+      ]
+    };
+    const CONSTRUCTION_LABEL = { newbuild: '신축', remodel: '리모델링', custom: '사용자 지정' };
+
+    // 연차별 가동률 시나리오 설명 (호버 팝업용)
+    const UTIL_NOTES = {
+      1: '초기 셋업 및 램프업(Ramp-up) 기간 반영',
+      2: '안정화 및 AI 학습 수요 폭발기 (피크 타임)',
+      3: '차세대 칩셋 진입에 따른 보수적 하락 시작'
+    };
+
+    function facilitySumEok(type) {
+      return FACILITY_CAPEX.categories.reduce((sum, c) => sum + (type === 'newbuild' ? c.newbuild : c.remodel), 0);
+    }
+    function facilityDiffPct(c) {
+      if (c.newbuild <= 0 || Math.abs(c.newbuild - c.remodel) < 0.05) return null;
+      return -(1 - c.remodel / c.newbuild) * 100;
+    }
+    function deriveConstructionType(value) {
+      if (Math.abs(value - facilitySumEok('newbuild')) < 0.5) return 'newbuild';
+      if (Math.abs(value - facilitySumEok('remodel')) < 0.5) return 'remodel';
+      return 'custom';
+    }
+    function getUtilizations(inputState = state) {
+      return [inputState.utilY1, inputState.utilY2, inputState.utilY3].map(v => (Number(v) || 0) / 100);
+    }
+    function utilAvgPct(inputState = state) {
+      const arr = [inputState.utilY1, inputState.utilY2, inputState.utilY3].map(v => Number(v) || 0);
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
 
     const controlGroups = [
       {
@@ -1493,12 +1919,13 @@
         scope: '두 모델 공통',
         views: ['gpu', 'colo', 'compare'],
         controls: [
-          { id: 'utilizationPct', label: '목표 가동률', suffix: '%', min: 10, max: 100, step: 1, digits: 0 },
+          { id: 'utilYears', label: '목표 가동률', type: 'utilYears' },
           { id: 'totalPowerKw', label: '총 수전용량', suffix: 'kW', min: 1, max: 30000, step: 10, digits: 0, numberOnly: true },
           { id: 'itPowerKw', label: 'IT 수전용량', suffix: 'kW', min: 1, max: 20000, step: 10, digits: 0, numberOnly: true },
+          { id: 'constructionType', label: '시설 유형 (신축/리모델링)', type: 'segmented', options: [{ value: 'newbuild', label: '신축 350억' }, { value: 'remodel', label: '리모델링 270억' }] },
           { id: 'facilityCapexEok', label: '시설 CAPEX', suffix: '억', min: 0, max: 1000, step: 10, digits: 0 },
           { id: 'energyCostRate', label: '전력량 요금단가', suffix: '원/kWh', min: 50, max: 300, step: 0.1, digits: 1 },
-          { id: 'basicChargeKwMonth', label: '기본요금 단가', suffix: '원/kW·월', min: 0, max: 30000, step: 100, digits: 0 }
+          { id: 'basicChargeKwMonth', label: '전기기본요금 단가', suffix: '원/kW·월', min: 0, max: 30000, step: 100, digits: 0 }
         ]
       },
       {
@@ -1675,6 +2102,13 @@
       }
     }
 
+    function applyConstructionType(type) {
+      state.constructionType = type;
+      state.facilityCapexEok = facilitySumEok(type);
+      buildControls();
+      render();
+    }
+
     function buildControls() {
       const root = document.getElementById('controlsRoot');
       root.innerHTML = controlGroups.map(group => `
@@ -1683,6 +2117,45 @@
           ${group.controls.map(def => {
             const current = state[def.id];
             const base = DEFAULTS[def.id];
+            if (def.type === 'utilYears') {
+              const savings = -(1 - facilitySumEok('remodel') / facilitySumEok('newbuild')) * 100;
+              return `
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label>${def.label} <span class="util-hint-icon" title="각 연차에 커서를 올리면 설명이 표시됩니다">ⓘ</span></label>
+                    <span class="control-value" data-util-avg>3년 평균 ${nf.format(Math.round(utilAvgPct()))}%</span>
+                  </div>
+                  <div class="util-years">
+                    ${[1, 2, 3].map(y => `
+                      <div class="util-year" data-util-year="${y}">
+                        <span class="util-year-label">${y}년차</span>
+                        <div class="util-year-field">
+                          <input type="number" min="0" max="100" step="1" value="${state['utilY' + y]}" data-input="utilY${y}" aria-label="${y}년차 가동률" />
+                          <span class="util-year-suffix">%</span>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <div class="base-hint">1년차 램프업 60% · 2년차 피크 90% · 3년차 보수적 하락 80% (연차별 가동률 시나리오)</div>
+                </div>
+              `;
+            }
+            if (def.type === 'segmented') {
+              return `
+                <div class="control-item">
+                  <div class="control-meta">
+                    <label>${def.label}</label>
+                    <span class="control-value" data-construction-badge>${CONSTRUCTION_LABEL[state[def.id]] || '사용자 지정'}</span>
+                  </div>
+                  <div class="segmented" role="group" aria-label="${def.label}">
+                    ${def.options.map(opt => `
+                      <button type="button" class="segmented-btn ${state[def.id] === opt.value ? 'active' : ''}" data-construction="${opt.value}">${opt.label}</button>
+                    `).join('')}
+                  </div>
+                  <div class="base-hint">신축 ${nf1.format(facilitySumEok('newbuild'))}억 · 리모델링 ${nf1.format(facilitySumEok('remodel'))}억 (리모델링 시 신축 대비 약 ${nf.format(Math.round((1 - facilitySumEok('remodel') / facilitySumEok('newbuild')) * 100))}% 절감)</div>
+                </div>
+              `;
+            }
             if (def.numberOnly) {
               return `
                 <div class="control-item">
@@ -1734,6 +2207,15 @@
       document.querySelectorAll('[data-pue-badge]').forEach(badge => {
         badge.textContent = `PUE ${formatPue()}`;
       });
+      document.querySelectorAll('[data-construction]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.construction === state.constructionType);
+      });
+      document.querySelectorAll('[data-construction-badge]').forEach(badge => {
+        badge.textContent = CONSTRUCTION_LABEL[state.constructionType] || '사용자 지정';
+      });
+      document.querySelectorAll('[data-util-avg]').forEach(badge => {
+        badge.textContent = `3년 평균 ${nf.format(Math.round(utilAvgPct()))}%`;
+      });
     }
 
     function refreshControlVisibility() {
@@ -1756,11 +2238,11 @@
     }
 
     function calcGpu(inputState = state, inputRacks = rackTypes) {
-      const utilization = inputState.utilizationPct / 100;
+      const utils = getUtilizations(inputState);
       const revenueByRack = {};
       const capexByRack = {};
       const counts = {};
-      let annualRevenueEok = 0;
+      let annualRevenueEok100 = 0;
       let itCapexEok = 0;
       let usedItPower = 0;
       let totalGpu = 0;
@@ -1770,11 +2252,11 @@
         const rack = inputRacks[key];
         const count = getCountFromState(inputState, key);
         counts[key] = count;
-        const revenue = count * rack.gpusPerRack * HOURS * utilization * rack.gpuHourlyRate / EOK;
+        const revenue100 = count * rack.gpusPerRack * HOURS * rack.gpuHourlyRate / EOK;
         const capex = count * rack.rackPriceUsd * inputState.fxKrwUsd / EOK;
-        revenueByRack[key] = revenue;
+        revenueByRack[key] = revenue100;
         capexByRack[key] = capex;
-        annualRevenueEok += revenue;
+        annualRevenueEok100 += revenue100;
         itCapexEok += capex;
         usedItPower += count * rack.rackPowerKw;
         totalGpu += count * rack.gpusPerRack;
@@ -1785,15 +2267,15 @@
       const pue = getPue(inputState);
       const totalPowerKw = inputState.totalPowerKw;
       const baseEok = totalPowerKw * inputState.basicChargeKwMonth * 12 / EOK;
-      const energyKwh = usedItPower * pue * HOURS * utilization;
-      const energyEok = energyKwh * inputState.energyCostRate / EOK;
-      const electricityEok = baseEok + energyEok;
+      const energyEok100 = usedItPower * pue * HOURS * inputState.energyCostRate / EOK;
       const depRates = getDepreciationRates(inputState).map(value => value / 100);
 
-      const annualRevenue = Array(YEARS).fill(annualRevenueEok);
-      const annualExpense = Array.from({ length: YEARS }, (_, index) => {
+      const annualRevenue = utils.map(u => annualRevenueEok100 * u);
+      const energyByYear = utils.map(u => energyEok100 * u);
+      const electricityByYear = energyByYear.map(e => baseEok + e);
+      const annualExpense = utils.map((u, index) => {
         const initialCapex = index === 0 ? itCapexEok + inputState.facilityCapexEok : 0;
-        return initialCapex + electricityEok + (itCapexEok * depRates[index]);
+        return initialCapex + electricityByYear[index] + (itCapexEok * depRates[index]);
       });
 
       let sumR = 0;
@@ -1801,6 +2283,9 @@
       const cumRevenue = annualRevenue.map(value => (sumR += value));
       const cumExpense = annualExpense.map(value => (sumE += value));
       const cumProfit = cumRevenue.map((value, index) => value - cumExpense[index]);
+
+      const energyEok = energyByYear.reduce((a, b) => a + b, 0) / YEARS;
+      const electricityEok = baseEok + energyEok;
 
       return {
         key: 'gpu',
@@ -1812,6 +2297,7 @@
         cumRevenue,
         cumExpense,
         cumProfit,
+        electricityByYear,
         usedItPower,
         idleKw,
         totalPowerKw,
@@ -1822,26 +2308,26 @@
         itCapexEok,
         totalGpu,
         totalFp4,
+        utils,
         allocationPct: inputState.itPowerKw ? usedItPower / inputState.itPowerKw * 100 : 0
       };
     }
 
     function calcColo(inputState = state) {
-      const utilization = inputState.utilizationPct / 100;
+      const utils = getUtilizations(inputState);
       const pue = getPue(inputState);
       const totalPowerKw = inputState.totalPowerKw;
       const colocationRevenueEok = inputState.itPowerKw * inputState.colocationFeeKwMonth * 12 / EOK;
-      const electricRevenueEok = totalPowerKw * HOURS * utilization * inputState.electricSaleRate / EOK;
-      const annualRevenueEok = colocationRevenueEok + electricRevenueEok;
+      const electricRevenue100 = totalPowerKw * HOURS * inputState.electricSaleRate / EOK;
       const baseEok = totalPowerKw * inputState.basicChargeKwMonth * 12 / EOK;
-      const energyKwh = totalPowerKw * HOURS * utilization;
-      const energyEok = energyKwh * inputState.energyCostRate / EOK;
-      const electricityEok = baseEok + energyEok;
+      const energyEok100 = totalPowerKw * HOURS * inputState.energyCostRate / EOK;
 
-      const annualRevenue = Array(YEARS).fill(annualRevenueEok);
-      const annualExpense = Array.from({ length: YEARS }, (_, index) => {
+      const annualRevenue = utils.map(u => colocationRevenueEok + electricRevenue100 * u);
+      const energyByYear = utils.map(u => energyEok100 * u);
+      const electricityByYear = energyByYear.map(e => baseEok + e);
+      const annualExpense = utils.map((u, index) => {
         const initialCapex = index === 0 ? inputState.facilityCapexEok : 0;
-        return initialCapex + electricityEok;
+        return initialCapex + electricityByYear[index];
       });
 
       let sumR = 0;
@@ -1850,6 +2336,10 @@
       const cumExpense = annualExpense.map(value => (sumE += value));
       const cumProfit = cumRevenue.map((value, index) => value - cumExpense[index]);
 
+      const energyEok = energyByYear.reduce((a, b) => a + b, 0) / YEARS;
+      const electricityEok = baseEok + energyEok;
+      const electricRevenueEok = electricRevenue100 * (utils.reduce((a, b) => a + b, 0) / YEARS);
+
       return {
         key: 'colo',
         annualRevenue,
@@ -1857,13 +2347,15 @@
         cumRevenue,
         cumExpense,
         cumProfit,
+        electricityByYear,
         totalPowerKw,
         pue,
         colocationRevenueEok,
         electricRevenueEok,
         baseEok,
         energyEok,
-        electricityEok
+        electricityEok,
+        utils
       };
     }
 
@@ -2077,13 +2569,13 @@
               <strong>${usageText}</strong>
             </div>
             <div class="basis-chips">
-              <span>목표 가동률 ${state.utilizationPct}%</span>
+              <span>연차 가동률 ${nf.format(state.utilY1)}·${nf.format(state.utilY2)}·${nf.format(state.utilY3)}%</span>
               <span>총 수전용량 ${nf.format(state.totalPowerKw)}kW</span>
               <span>IT 수전용량 ${nf.format(state.itPowerKw)}kW</span>
               <span>PUE ${formatPue()}</span>
               <span>시설 CAPEX ${eok(state.facilityCapexEok)}</span>
               <span>전력량 단가 ${nf1.format(state.energyCostRate)}원/kWh</span>
-              <span>기본요금 ${nf.format(state.basicChargeKwMonth)}원/kW·월</span>
+              <span>전기기본요금 ${nf.format(state.basicChargeKwMonth)}원/kW·월</span>
               ${isGpu ? `<span>환율 ${nf.format(state.fxKrwUsd)}원/USD</span><span>감가상각 ${getDepreciationText()}%</span>` : `<span>상면요율 ${nf.format(state.colocationFeeKwMonth)}원/kW·월</span><span>전기판매 ${nf1.format(state.electricSaleRate)}원/kWh</span>`}
             </div>
           </div>
@@ -2103,8 +2595,73 @@
             </article>
             <article class="formula-card">
               <h3>전기료</h3>
-              <p><code>총 수전용량(kW) × 기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
+              <p><code>총 수전용량(kW) × 전기기본요금 × 12 + 사용 IT 전력(kW) × PUE × 8,760시간 × 가동률 × 전력량 단가</code></p>
             </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderFacilityCapexPanel() {
+      const type = state.constructionType;
+      const newSum = facilitySumEok('newbuild');
+      const remodelSum = facilitySumEok('remodel');
+      const totalDiffPct = Math.round((1 - remodelSum / newSum) * 100);
+      const diffCell = c => {
+        const d = facilityDiffPct(c);
+        return d === null
+          ? `<span class="fac-diff same">동일</span>`
+          : `<span class="fac-diff save">${nf.format(Math.round(d))}%</span>`;
+      };
+      const noteCell = c => `
+        <div class="fac-note-head">[세부 내역]</div>
+        <ul class="fac-detail-list">${c.details.map(d => `<li>${d}</li>`).join('')}</ul>
+        <div class="fac-cost-label ${c.costLabel === '비용 100% 동일' ? 'same' : 'save'}">[${c.costLabel}]</div>
+        <div class="fac-logic">${c.logic}</div>
+      `;
+      const rows = FACILITY_CAPEX.categories.map(c => `
+        <tr>
+          <td class="fac-cat"><strong>${c.label}</strong></td>
+          <td class="fac-num ${type === 'newbuild' ? 'fac-active' : ''}">${nf1.format(c.newbuild)}억</td>
+          <td class="fac-num ${type === 'remodel' ? 'fac-active' : ''}">${nf1.format(c.remodel)}억</td>
+          <td class="fac-num">${diffCell(c)}</td>
+          <td class="fac-note">${noteCell(c)}</td>
+        </tr>
+      `).join('');
+      const badge = type === 'custom'
+        ? `<span class="fac-pill custom">사용자 지정 · ${eok(state.facilityCapexEok)}</span>`
+        : `<span class="fac-pill ${type}">${CONSTRUCTION_LABEL[type]} 적용 중 · ${eok(facilitySumEok(type))}</span>`;
+      return `
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>CAPEX 시설비 세부 내역</h2>
+              <p>신축·리모델링 기준 시설비 계산표입니다. 상단 '시설 유형' 토글로 전환하면 시설 CAPEX가 자동 반영됩니다. 전력·공조·통신 설비는 신축 여부와 무관하게 동일하며, 절감은 건축/토목·설계/간접비에서 발생합니다.</p>
+            </div>
+            ${badge}
+          </div>
+          <div class="table-scroll">
+            <table class="facility-table">
+              <thead>
+                <tr>
+                  <th>상세내역</th>
+                  <th class="fac-num ${type === 'newbuild' ? 'fac-active' : ''}">신축 예산</th>
+                  <th class="fac-num ${type === 'remodel' ? 'fac-active' : ''}">리모델링 예산</th>
+                  <th class="fac-num">증감</th>
+                  <th>비고 (세부 내역 및 원가 조정 논리)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <tr class="fac-total">
+                  <td><strong>총 CAPEX</strong></td>
+                  <td class="fac-num ${type === 'newbuild' ? 'fac-active' : ''}"><strong>${nf1.format(newSum)}억</strong></td>
+                  <td class="fac-num ${type === 'remodel' ? 'fac-active' : ''}"><strong>${nf1.format(remodelSum)}억</strong></td>
+                  <td class="fac-num"><span class="fac-diff save">-${totalDiffPct}%</span></td>
+                  <td class="fac-note"><div class="fac-logic">리모델링의 경우 신축(${nf1.format(newSum)}억) 대비 총 ${nf1.format(newSum - remodelSum)}억 원(약 ${totalDiffPct}%)이 절감됩니다.</div></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
       `;
@@ -2373,6 +2930,7 @@
           ${renderComparePanel()}
           ${renderChartPanel()}
           ${renderFormulaPanel(gpuData)}
+          ${renderFacilityCapexPanel()}
           ${renderTableHtml(gpuData)}
         `;
         renderChart(gpuData);
@@ -2385,6 +2943,7 @@
           ${renderRackAdjust(data)}
           ${renderChartPanel()}
           ${renderFormulaPanel(data)}
+          ${renderFacilityCapexPanel()}
           ${renderTableHtml(data)}
         `;
         renderChart(data);
@@ -2394,6 +2953,7 @@
       content.innerHTML = `
         ${renderChartPanel()}
         ${renderFormulaPanel(data)}
+        ${renderFacilityCapexPanel()}
         ${renderTableHtml(data)}
       `;
       renderChart(data);
@@ -2439,9 +2999,12 @@
 
       if (type === 'conservative') {
         Object.assign(state, {
-          utilizationPct: 65,
+          utilY1: 50,
+          utilY2: 80,
+          utilY3: 70,
           totalPowerKw: 2700,
-          facilityCapexEok: 300,
+          facilityCapexEok: facilitySumEok('remodel'),
+          constructionType: 'remodel',
           energyCostRate: 140,
           basicChargeKwMonth: 11000,
           fxKrwUsd: 1550,
@@ -2455,9 +3018,12 @@
 
       if (type === 'aggressive') {
         Object.assign(state, {
-          utilizationPct: 90,
+          utilY1: 70,
+          utilY2: 95,
+          utilY3: 90,
           totalPowerKw: 2360,
-          facilityCapexEok: 240,
+          facilityCapexEok: facilitySumEok('remodel'),
+          constructionType: 'remodel',
           energyCostRate: 110,
           basicChargeKwMonth: 9000,
           fxKrwUsd: 1450,
@@ -2626,7 +3192,10 @@
           if (Number.isFinite(def.min)) value = Math.max(def.min, value);
           if (Number.isFinite(def.max)) value = Math.min(def.max, value);
         }
+        if (/^utilY[123]$/.test(inputId)) value = Math.max(0, Math.min(100, value));
         state[inputId] = value;
+        if (inputId === 'facilityCapexEok') state.constructionType = deriveConstructionType(value);
+        if (/^utilY[123]$/.test(inputId) && activeUtilYear) refreshUtilTip(activeUtilYear);
         if (inputId === 'itPowerKw') handleItPowerChange();
         refreshControls();
         render();
@@ -2670,6 +3239,12 @@
         return;
       }
 
+      const constructionButton = event.target.closest('[data-construction]');
+      if (constructionButton) {
+        applyConstructionType(constructionButton.dataset.construction);
+        return;
+      }
+
       const rackButton = event.target.closest('[data-select-rack]');
       if (rackButton) {
         selectRack(rackButton.dataset.selectRack);
@@ -2686,10 +3261,53 @@
       }
     });
 
+    // 연차별 가동률 호버 팝업 (차트 '3년 누적 추이' 툴팁과 동일 방식)
+    const utilTip = document.createElement('div');
+    utilTip.className = 'util-tip';
+    utilTip.id = 'utilTip';
+    document.body.appendChild(utilTip);
+    let activeUtilYear = null;
+
+    function refreshUtilTip(year) {
+      const val = state['utilY' + year];
+      utilTip.innerHTML = `
+        <div class="tt-title">${year}년 차 (${nf.format(Number(val) || 0)}%)</div>
+        <div class="tt-desc">${UTIL_NOTES[year] || ''}</div>
+      `;
+    }
+    function positionUtilTip(event) {
+      const w = utilTip.offsetWidth;
+      const h = utilTip.offsetHeight;
+      let left = event.clientX + 14;
+      let top = event.clientY - h - 12;
+      if (left + w > window.innerWidth - 8) left = event.clientX - w - 14;
+      if (top < 8) top = event.clientY + 18;
+      utilTip.style.left = `${Math.max(8, left)}px`;
+      utilTip.style.top = `${Math.max(8, top)}px`;
+    }
+    document.addEventListener('mouseover', event => {
+      const yearEl = event.target.closest('[data-util-year]');
+      if (!yearEl) return;
+      activeUtilYear = Number(yearEl.dataset.utilYear);
+      refreshUtilTip(activeUtilYear);
+      utilTip.classList.add('visible');
+      positionUtilTip(event);
+    });
+    document.addEventListener('mousemove', event => {
+      if (!activeUtilYear) return;
+      if (event.target.closest('[data-util-year]')) positionUtilTip(event);
+    });
+    document.addEventListener('mouseout', event => {
+      const yearEl = event.target.closest('[data-util-year]');
+      if (yearEl && !yearEl.contains(event.relatedTarget)) {
+        activeUtilYear = null;
+        utilTip.classList.remove('visible');
+      }
+    });
+
     fillSelectedRack(state, rackTypes, state.selectedRack);
     buildControls();
     render();
-  </script>
-
+  </script><div class="util-tip" id="utilTip"></div>
 
 </body></html>
