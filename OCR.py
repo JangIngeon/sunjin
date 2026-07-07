@@ -1,23 +1,20 @@
 """
-PDF 첫 페이지 추출 + 병합 + PaddleOCR 기반 한국어 OCR 자동화 웹앱
+PDF 첫 페이지 추출 + 병합 + 한국어 OCR (Tesseract 기반, Streamlit Cloud 호환)
 
-설치:
-    pip install streamlit pymupdf paddlepaddle paddleocr reportlab pypdf
+필요한 파일 (리포지토리 루트에 함께 두어야 함):
+    requirements.txt
+        streamlit
+        pymupdf
+        reportlab
+        pypdf
+        pytesseract
 
-실행:
-    streamlit run app.py
+    packages.txt
+        tesseract-ocr
+        tesseract-ocr-kor
 
-동작 순서:
-    1) 여러 개의 PDF 파일을 업로드
-    2) 각 PDF의 첫 페이지만 추출 (하단 서명란은 잘라내서 제외)
-    3) 잘라낸 페이지 이미지들을 하나의 PDF로 병합
-    4) PaddleOCR로 한국어 텍스트 인식 후, 인식된 텍스트를 이미지 위에
-       "보이지 않는 레이어"로 삽입하여 복사/검색 가능한 PDF 생성
-    5) 결과 PDF 다운로드 버튼 제공
-
-주의:
-    - 모든 처리는 로컬(사용자 PC)에서만 이루어지며 외부 서버로 파일이 전송되지 않습니다.
-    - 첫 실행 시 PaddleOCR 한국어 모델을 자동으로 다운로드하므로 다소 시간이 걸릴 수 있습니다.
+로컬 실행:
+    streamlit run OCR.py
 """
 
 import io
@@ -25,19 +22,12 @@ import os
 import tempfile
 
 import fitz  # PyMuPDF
+import pytesseract
 import streamlit as st
-from paddleocr import PaddleOCR
+from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-
-
-# ------------------------------------------------------------------
-# OCR 엔진 로드 (캐시하여 매 실행마다 다시 로드하지 않도록 함)
-# ------------------------------------------------------------------
-@st.cache_resource(show_spinner="OCR 엔진 초기화 중 (최초 1회, 모델 다운로드 포함)...")
-def load_ocr_engine():
-    return PaddleOCR(use_angle_cls=True, lang="korean", show_log=False)
 
 
 def crop_first_page_to_image(pdf_bytes: bytes, crop_ratio: float, zoom: float):
@@ -56,24 +46,39 @@ def crop_first_page_to_image(pdf_bytes: bytes, crop_ratio: float, zoom: float):
     return img_bytes, width, height
 
 
-def make_searchable_page_pdf(img_bytes: bytes, width: int, height: int, ocr_result, out_path: str):
-    """이미지를 배경으로 깔고, 인식된 텍스트를 투명 레이어로 겹쳐 복사 가능한 1페이지 PDF 생성"""
+def make_searchable_page_pdf(img_bytes: bytes, width: int, height: int, out_path: str):
+    """이미지를 배경으로 깔고, Tesseract가 인식한 단어별 위치에 투명 텍스트를 겹쳐
+    복사/검색 가능한 1페이지 PDF를 생성"""
+    pil_img = Image.open(io.BytesIO(img_bytes))
+
+    # 단어 단위 좌표까지 포함한 상세 인식 결과
+    ocr_data = pytesseract.image_to_data(
+        pil_img, lang="kor+eng", config="--psm 6",
+        output_type=pytesseract.Output.DICT,
+    )
+
     c = canvas.Canvas(out_path, pagesize=(width, height))
-    img = ImageReader(io.BytesIO(img_bytes))
-    c.drawImage(img, 0, 0, width=width, height=height)
+    img_reader = ImageReader(io.BytesIO(img_bytes))
+    c.drawImage(img_reader, 0, 0, width=width, height=height)
 
-    if ocr_result and ocr_result[0]:
-        for line in ocr_result[0]:
-            box, (text, conf) = line
-            x0, y0 = box[0]
-            x2, y2 = box[2]
-            text_x = x0
-            text_y = height - y2  # PDF 좌표계는 아래에서 위로 증가
+    n_boxes = len(ocr_data["text"])
+    for i in range(n_boxes):
+        text = ocr_data["text"][i].strip()
+        if not text:
+            continue
+        x = ocr_data["left"][i]
+        y = ocr_data["top"][i]
+        w = ocr_data["width"][i]
+        h = ocr_data["height"][i]
 
-            font_size = max(6, (y2 - y0) * 0.8)
-            c.setFont("Helvetica", font_size)
-            c.setFillAlpha(0)  # 완전 투명 (보이지 않지만 선택/복사는 가능)
-            c.drawString(text_x, text_y, text)
+        # PDF 좌표계는 아래에서 위로 증가하므로 y 변환 필요
+        text_x = x
+        text_y = height - (y + h)
+
+        font_size = max(6, h * 0.8)
+        c.setFont("Helvetica", font_size)
+        c.setFillAlpha(0)  # 투명 (보이지 않지만 선택/복사 가능)
+        c.drawString(text_x, text_y, text)
 
     c.showPage()
     c.save()
@@ -82,7 +87,7 @@ def make_searchable_page_pdf(img_bytes: bytes, width: int, height: int, ocr_resu
 def main():
     st.set_page_config(page_title="PDF 첫페이지 병합 + 한국어 OCR", layout="centered")
     st.title("📄 PDF 첫 페이지 추출 → 병합 → 한국어 OCR")
-    st.caption("여러 PDF를 올리면 각 파일의 첫 페이지만 모아 하나의 복사 가능한 PDF로 만들어 드립니다. 모든 처리는 이 컴퓨터 안에서만 이루어집니다.")
+    st.caption("여러 PDF를 올리면 각 파일의 첫 페이지만 모아 하나의 복사 가능한 PDF로 만들어 드립니다.")
 
     with st.sidebar:
         st.header("⚙️ 설정")
@@ -106,8 +111,6 @@ def main():
         st.write(f"업로드된 파일 수: **{len(uploaded_files)}개**")
 
     if uploaded_files and st.button("🚀 자동 처리 시작", type="primary"):
-        ocr_engine = load_ocr_engine()
-
         with tempfile.TemporaryDirectory() as tmp_dir:
             progress = st.progress(0.0)
             status = st.empty()
@@ -117,25 +120,14 @@ def main():
 
             for idx, uploaded_file in enumerate(uploaded_files, start=1):
                 status.text(f"처리 중 ({idx}/{total}): {uploaded_file.name}")
-
                 pdf_bytes = uploaded_file.read()
 
                 try:
-                    # 1) 첫 페이지 크롭 → 이미지
                     img_bytes, w, h = crop_first_page_to_image(pdf_bytes, crop_ratio, zoom)
 
-                    # 2) 임시 이미지 파일로 저장 후 PaddleOCR 실행
-                    temp_img_path = os.path.join(tmp_dir, f"page_{idx}.png")
-                    with open(temp_img_path, "wb") as f:
-                        f.write(img_bytes)
-
-                    ocr_result = ocr_engine.ocr(temp_img_path, cls=True)
-
-                    # 3) 텍스트 레이어를 포함한 1페이지짜리 PDF 생성
                     page_pdf_path = os.path.join(tmp_dir, f"page_{idx}.pdf")
-                    make_searchable_page_pdf(img_bytes, w, h, ocr_result, page_pdf_path)
+                    make_searchable_page_pdf(img_bytes, w, h, page_pdf_path)
 
-                    # 4) 최종 병합 문서에 페이지 추가
                     reader = PdfReader(page_pdf_path)
                     writer.add_page(reader.pages[0])
 
