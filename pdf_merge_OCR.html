@@ -91,12 +91,10 @@
   a.download-link.show { display: block; }
 
   #ocrSection {
-    display: none;
     margin-top: 28px;
     padding-top: 20px;
     border-top: 1px solid #ddd;
   }
-  #ocrSection.show { display: block; }
 
   #ocrSection h2 {
     font-size: 15px;
@@ -139,17 +137,17 @@
 
   <button id="mergeBtn" disabled="">첫 페이지 추출 후 병합</button>
   <div id="status"></div>
-  <a class="download-link" id="downloadLink" download="병합_첫페이지.pdf">병합 PDF 다운로드</a>
+  <a class="download-link" id="downloadLink" download="병합_첫페이지.pdf">📥 병합 PDF 다운로드</a>
 
   <div id="ocrSection">
-    <h2>다음 단계: PDF24에서 한국어 OCR 적용</h2>
+    <h2>PDF24에서 한국어 OCR 적용하기</h2>
     <ol>
-      <li>방금 받은 <code>병합_첫페이지.pdf</code>를 PDF24 업로드 상자에 끌어다 놓기</li>
+      <li>병합한(또는 원하는) PDF를 PDF24 업로드 상자에 끌어다 놓기</li>
       <li>언어 설정에서 <strong>Korean(한국어)</strong> 선택</li>
       <li><strong>OCR 강제(Force OCR)</strong> 옵션 체크</li>
       <li>OCR 시작 → 완료되면 결과 파일 다운로드</li>
     </ol>
-    <a class="link-btn" href="https://tools.pdf24.org/ko/ocr-pdf" target="_blank" rel="noopener">🔗 PDF24 OCR 페이지 새 탭에서 열기</a>
+    <a class="link-btn" href="https://tools.pdf24.org/ko/ocr-pdf" target="_blank" rel="noopener" id="ocrLinkBtn">🔗 PDF24 OCR 페이지 새 탭에서 열기</a>
   </div>
 </div>
 
@@ -209,7 +207,6 @@ function renderList() {
   });
   mergeBtn.disabled = files.length === 0;
   downloadLink.classList.remove('show');
-  ocrSection.classList.remove('show');
   statusEl.textContent = '';
   statusEl.classList.remove('error');
 }
@@ -251,7 +248,6 @@ mergeBtn.addEventListener('click', async () => {
 
     downloadLink.href = url;
     downloadLink.classList.add('show');
-    ocrSection.classList.add('show');
     statusEl.textContent = `✅ 완료! 총 ${successCount}페이지 병합됨`;
   } catch (err) {
     console.error(err);
