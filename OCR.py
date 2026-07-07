@@ -12,42 +12,45 @@ PDF 첫 페이지 추출 + 병합 -> PDF24 OCR 페이지로 연결
 필요한 파일 (리포지토리 루트):
     requirements.txt
         streamlit
-        pymupdf
         pypdf
 
 로컬 실행:
     streamlit run OCR.py
 """
 
-import os
-import tempfile
+import io
 
-import fitz  # PyMuPDF
 import streamlit as st
 from pypdf import PdfReader, PdfWriter
 
 PDF24_OCR_URL = "https://tools.pdf24.org/ko/ocr-pdf"
 
 
-def extract_first_page_cropped(pdf_bytes: bytes, crop_ratio: float, tmp_dir: str, out_name: str) -> str:
-    """PDF 첫 페이지만 추출하고, 하단(crop_ratio 이후, 예: 서명란)을 잘라낸 1페이지 PDF를 저장"""
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    page = doc[0]
-    rect = page.rect
+def extract_first_page_cropped(pdf_bytes: bytes, crop_ratio: float):
+    """PDF 첫 페이지만 추출하고, 하단(crop_ratio 이후, 예: 서명란)을 잘라낸 page 객체 반환.
+
+    MediaBox와 CropBox를 항상 같은 값으로 함께 맞춰서 'CropBox not in MediaBox' 오류가
+    나지 않도록 합니다.
+    """
+    reader = PdfReader(io.BytesIO(pdf_bytes))
+    page = reader.pages[0]
 
     if crop_ratio < 1.0:
-        new_height = rect.height * crop_ratio
-        page.set_mediabox(fitz.Rect(rect.x0, rect.y0, rect.x1, rect.y0 + new_height))
-        page.set_cropbox(fitz.Rect(rect.x0, rect.y0, rect.x1, rect.y0 + new_height))
+        x0 = float(page.mediabox.left)
+        y0 = float(page.mediabox.bottom)
+        x1 = float(page.mediabox.right)
+        y1 = float(page.mediabox.top)
+        height = y1 - y0
 
-    new_doc = fitz.open()
-    new_doc.insert_pdf(doc, from_page=0, to_page=0)
+        new_bottom = y0 + height * (1 - crop_ratio)  # 하단을 잘라내므로 bottom을 올림
 
-    out_path = os.path.join(tmp_dir, out_name)
-    new_doc.save(out_path)
-    new_doc.close()
-    doc.close()
-    return out_path
+        # MediaBox, CropBox를 동일하게 맞춰서 불일치 방지
+        page.mediabox.lower_left = (x0, new_bottom)
+        page.mediabox.upper_right = (x1, y1)
+        page.cropbox.lower_left = (x0, new_bottom)
+        page.cropbox.upper_right = (x1, y1)
+
+    return page
 
 
 def main():
@@ -73,41 +76,33 @@ def main():
         st.write(f"업로드된 파일 수: **{len(uploaded_files)}개**")
 
     if uploaded_files and st.button("📎 첫 페이지 추출 후 병합", type="primary"):
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            progress = st.progress(0.0)
-            status = st.empty()
+        progress = st.progress(0.0)
+        status = st.empty()
 
-            writer = PdfWriter()
-            total = len(uploaded_files)
+        writer = PdfWriter()
+        total = len(uploaded_files)
 
-            for idx, uploaded_file in enumerate(uploaded_files, start=1):
-                status.text(f"처리 중 ({idx}/{total}): {uploaded_file.name}")
-                pdf_bytes = uploaded_file.read()
+        for idx, uploaded_file in enumerate(uploaded_files, start=1):
+            status.text(f"처리 중 ({idx}/{total}): {uploaded_file.name}")
+            pdf_bytes = uploaded_file.read()
 
-                try:
-                    page_path = extract_first_page_cropped(
-                        pdf_bytes, crop_ratio, tmp_dir, f"page_{idx}.pdf"
-                    )
-                    reader = PdfReader(page_path)
-                    writer.add_page(reader.pages[0])
-                except Exception as e:
-                    st.warning(f"'{uploaded_file.name}' 처리 중 오류 발생: {e}")
+            try:
+                page = extract_first_page_cropped(pdf_bytes, crop_ratio)
+                writer.add_page(page)
+            except Exception as e:
+                st.warning(f"'{uploaded_file.name}' 처리 중 오류 발생: {e}")
 
-                progress.progress(idx / total)
+            progress.progress(idx / total)
 
-            status.text("병합 파일 저장 중...")
-            result_path = os.path.join(tmp_dir, "병합_첫페이지.pdf")
-            with open(result_path, "wb") as f:
-                writer.write(f)
+        status.text("병합 파일 저장 중...")
+        buf = io.BytesIO()
+        writer.write(buf)
+        result_bytes = buf.getvalue()
 
-            with open(result_path, "rb") as f:
-                result_bytes = f.read()
+        status.text("✅ 완료!")
+        st.session_state["merged_pdf_bytes"] = result_bytes
+        st.session_state["merged_page_count"] = len(writer.pages)
 
-            status.text("완료!")
-            st.session_state["merged_pdf_bytes"] = result_bytes
-            st.session_state["merged_page_count"] = len(writer.pages)
-
-    # 병합 결과가 세션에 있으면 다운로드 + PDF24 연결 안내 표시
     if "merged_pdf_bytes" in st.session_state:
         st.success(f"총 {st.session_state['merged_page_count']}페이지, 병합이 완료되었습니다.")
 
@@ -121,7 +116,7 @@ def main():
         st.markdown("---")
         st.subheader("2단계: PDF24에서 한국어 OCR 적용")
         st.markdown(
-            f"""
+            """
             아래 버튼으로 PDF24 OCR 페이지를 새 탭에서 열고, 방금 다운로드한 파일을 그대로 이어서 처리하세요.
 
             1. 위에서 다운로드한 `병합_첫페이지.pdf` 파일을 PDF24 페이지의 업로드 상자에 끌어다 놓기
