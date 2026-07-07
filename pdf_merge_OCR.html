@@ -1,30 +1,16 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PDF 첫 페이지 병합 → PDF24 OCR</title>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF 첫 페이지 병합</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
 <style>
-  :root {
-    --ink: #1c2321;
-    --paper: #f6f5f1;
-    --line: #d8d4c8;
-    --accent: #2f5d50;
-    --accent-soft: #e7efe9;
-    --danger: #9a3324;
-    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-    --sans: "IBM Plex Sans", "Pretendard", -apple-system, sans-serif;
-  }
-
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
+    background: #f6f5f1;
+    color: #1c2321;
+    font-family: -apple-system, "Pretendard", sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -33,80 +19,26 @@
 
   .sheet {
     width: 100%;
-    max-width: 640px;
-  }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 10px;
+    max-width: 560px;
   }
 
   h1 {
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 1.3;
-    margin: 0 0 8px;
-  }
-
-  .sub {
-    color: #5b6360;
-    font-size: 14.5px;
-    line-height: 1.6;
-    margin: 0 0 32px;
-  }
-
-  .step {
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    background: #fff;
-    padding: 24px;
-    margin-bottom: 16px;
-  }
-
-  .step-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    margin-bottom: 14px;
-  }
-
-  .step-num {
-    font-family: var(--mono);
-    font-size: 12px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    font-size: 22px;
+    margin: 0 0 24px;
   }
 
   #dropzone {
-    border: 1.5px dashed var(--line);
+    border: 1.5px dashed #ccc;
     border-radius: 4px;
     padding: 28px 16px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
     font-size: 13.5px;
-    color: #6b706d;
+    color: #666;
+    background: #fff;
   }
 
-  #dropzone.drag {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
-
-  #dropzone strong { color: var(--ink); }
+  #dropzone.drag { border-color: #2f5d50; background: #e7efe9; }
 
   #fileInput { display: none; }
 
@@ -114,106 +46,19 @@
     list-style: none;
     margin: 14px 0 0;
     padding: 0;
-    font-family: var(--mono);
-    font-size: 12.5px;
+    font-size: 13px;
   }
 
   #fileList li {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     padding: 7px 0;
-    border-bottom: 1px solid var(--line);
-    color: #444;
-    cursor: grab;
-    background: #fff;
-    transition: background 0.1s, opacity 0.1s;
+    border-bottom: 1px solid #ddd;
   }
 
-  #fileList li:last-child { border-bottom: none; }
-
-  #fileList li:active { cursor: grabbing; }
-
-  #fileList li.dragging {
-    opacity: 0.4;
-  }
-
-  #fileList li.drag-over {
-    border-top: 2px solid var(--accent);
-  }
-
-  .li-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    overflow: hidden;
-  }
-
-  .handle {
-    color: #b5b1a2;
-    font-size: 13px;
-    flex-shrink: 0;
-    user-select: none;
-  }
-
-  .fname {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .rm {
-    cursor: pointer;
-    color: var(--danger);
-    font-weight: 600;
-  }
-
-  .option-row {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-  }
-
-  .switch-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13.5px;
-    cursor: pointer;
-    color: #333;
-  }
-
-  .switch-row input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--accent);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 12px;
-    padding-left: 26px;
-    font-size: 12.5px;
-    color: #666;
-  }
-
-  .slider-row input[type="range"] {
-    flex: 1;
-    accent-color: var(--accent);
-  }
-
-  #contrastValue {
-    font-family: var(--mono);
-    width: 28px;
-    text-align: right;
-  }
+  .rm { cursor: pointer; color: #9a3324; font-weight: 600; }
 
   button {
-    font-family: var(--sans);
     font-size: 14px;
     font-weight: 600;
     border: none;
@@ -222,40 +67,20 @@
     cursor: pointer;
     width: 100%;
     margin-top: 16px;
-    transition: opacity 0.15s;
-  }
-
-  button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .primary {
-    background: var(--accent);
+    background: #2f5d50;
     color: #fff;
   }
-  .primary:hover:not(:disabled) { opacity: 0.88; }
 
-  #status {
-    font-family: var(--mono);
-    font-size: 12.5px;
-    color: var(--accent);
-    margin-top: 12px;
-    min-height: 18px;
-  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  #status.error { color: var(--danger); }
-
-  .result-box {
-    display: none;
-  }
-  .result-box.show { display: block; }
+  #status { font-size: 12.5px; color: #2f5d50; margin-top: 12px; min-height: 18px; }
+  #status.error { color: #9a3324; }
 
   a.download-link {
-    display: block;
+    display: none;
     text-align: center;
     text-decoration: none;
-    background: var(--ink);
+    background: #1c2321;
     color: #fff;
     font-weight: 600;
     font-size: 14px;
@@ -263,9 +88,23 @@
     border-radius: 3px;
     margin-top: 16px;
   }
+  a.download-link.show { display: block; }
 
-  ol.guide {
-    margin: 0;
+  #ocrSection {
+    display: none;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+  #ocrSection.show { display: block; }
+
+  #ocrSection h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+  }
+
+  #ocrSection ol {
+    margin: 0 0 14px;
     padding-left: 18px;
     font-size: 13.5px;
     line-height: 2;
@@ -276,70 +115,35 @@
     display: block;
     text-align: center;
     text-decoration: none;
-    border: 1.5px solid var(--accent);
-    color: var(--accent);
+    border: 1.5px solid #2f5d50;
+    color: #2f5d50;
     font-weight: 600;
     font-size: 14px;
     padding: 11px 18px;
     border-radius: 3px;
-    margin-top: 14px;
   }
-  .link-btn:hover { background: var(--accent-soft); }
-
-  footer {
-    font-size: 11.5px;
-    color: #9a9a92;
-    text-align: center;
-    margin-top: 28px;
-    line-height: 1.6;
-  }
+  .link-btn:hover { background: #e7efe9; }
 </style>
 </head>
 <body>
 
 <div class="sheet">
-  <div class="eyebrow">로컬 처리 · 서버 업로드 없음</div>
-  <h1>PDF 첫 페이지만 모아 병합하고,<br/>PDF24에서 한국어 OCR까지</h1>
-  <p class="sub">
-    여러 PDF를 올리면 각 파일의 첫 페이지만(원본 그대로, 잘라내지 않고) 추출해 하나의 파일로 합쳐드립니다.
-    모든 계산은 이 브라우저 안에서만 일어나며, 파일은 어디에도 전송되지 않습니다.
-  </p>
+  <h1>PDF 첫 페이지 추출 + 병합</h1>
 
-  <div class="step">
-    <div class="step-title"><span class="step-num">1</span> PDF 업로드</div>
-    <div id="dropzone">
-      클릭하거나 파일을 이 영역에 끌어다 놓으세요<br/>
-      <strong>여러 개 선택 가능</strong>
-    </div>
-    <input type="file" id="fileInput" accept="application/pdf" multiple />
-    <p id="orderHint" style="display:none; font-size:12px; color:#8a8f8c; margin:12px 0 0;">⠿ 항목을 위아래로 드래그해서 병합 순서를 바꿀 수 있어요</p>
-    <ul id="fileList"></ul>
-
-    <div class="option-row">
-      <label class="switch-row">
-        <input type="checkbox" id="preprocessToggle" checked />
-        <span>흑백 + 대비 강화 적용 (진한 색 배경 OCR 인식률 개선)</span>
-      </label>
-      <div class="slider-row" id="contrastRow">
-        <label for="contrastSlider">대비 강도</label>
-        <input type="range" id="contrastSlider" min="1" max="2.5" step="0.1" value="1.6" />
-        <span id="contrastValue">1.6</span>
-      </div>
-    </div>
-
-    <button id="mergeBtn" class="primary" disabled>첫 페이지 추출 후 병합</button>
-    <div id="status"></div>
+  <div id="dropzone">
+    클릭하거나 파일을 이 영역에 끌어다 놓으세요<br>
+    <strong>여러 개 선택 가능</strong>
   </div>
+  <input type="file" id="fileInput" accept="application/pdf" multiple="">
+  <ul id="fileList"></ul>
 
-  <div class="step result-box" id="resultBox">
-    <div class="step-title"><span class="step-num">2</span> 병합 결과 다운로드</div>
-    <p class="sub" style="margin-bottom:0;" id="resultSummary"></p>
-    <a class="download-link" id="downloadLink" download="병합_첫페이지.pdf">📥 병합 PDF 다운로드</a>
-  </div>
+  <button id="mergeBtn" disabled="">첫 페이지 추출 후 병합</button>
+  <div id="status"></div>
+  <a class="download-link" id="downloadLink" download="병합_첫페이지.pdf">📥 병합 PDF 다운로드</a>
 
-  <div class="step result-box" id="ocrBox">
-    <div class="step-title"><span class="step-num">3</span> PDF24에서 한국어 OCR 적용</div>
-    <ol class="guide">
+  <div id="ocrSection">
+    <h2>다음 단계: PDF24에서 한국어 OCR 적용</h2>
+    <ol>
       <li>방금 받은 <code>병합_첫페이지.pdf</code>를 PDF24 업로드 상자에 끌어다 놓기</li>
       <li>언어 설정에서 <strong>Korean(한국어)</strong> 선택</li>
       <li><strong>OCR 강제(Force OCR)</strong> 옵션 체크</li>
@@ -347,124 +151,20 @@
     </ol>
     <a class="link-btn" href="https://tools.pdf24.org/ko/ocr-pdf" target="_blank" rel="noopener">🔗 PDF24 OCR 페이지 새 탭에서 열기</a>
   </div>
-
-  <footer>
-    브라우저 안에서만 처리됩니다. 새로고침하면 목록은 초기화되며, 파일은 저장되지 않습니다.
-  </footer>
 </div>
 
 <script>
 const { PDFDocument } = PDFLib;
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
-
-const RENDER_SCALE = 3.0; // 고해상도 렌더링 배율 (약 216dpi 상당)
-
-const preprocessToggle = document.getElementById('preprocessToggle');
-const contrastRow = document.getElementById('contrastRow');
-const contrastSlider = document.getElementById('contrastSlider');
-const contrastValue = document.getElementById('contrastValue');
-
-preprocessToggle.addEventListener('change', () => {
-  contrastRow.style.opacity = preprocessToggle.checked ? '1' : '0.4';
-  contrastSlider.disabled = !preprocessToggle.checked;
-});
-
-contrastSlider.addEventListener('input', () => {
-  contrastValue.textContent = contrastSlider.value;
-});
 
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const fileListEl = document.getElementById('fileList');
 const mergeBtn = document.getElementById('mergeBtn');
 const statusEl = document.getElementById('status');
-const resultBox = document.getElementById('resultBox');
-const ocrBox = document.getElementById('ocrBox');
-const resultSummary = document.getElementById('resultSummary');
 const downloadLink = document.getElementById('downloadLink');
+const ocrSection = document.getElementById('ocrSection');
 
 let files = []; // { name, arrayBuffer }
-
-const orderHint = document.getElementById('orderHint');
-let dragSrcIdx = null;
-
-function renderList() {
-  fileListEl.innerHTML = '';
-  files.forEach((f, idx) => {
-    const li = document.createElement('li');
-    li.draggable = true;
-    li.dataset.idx = idx;
-    li.innerHTML = `
-      <span class="li-left">
-        <span class="handle">⠿</span>
-        <span class="fname">${idx + 1}. ${f.name}</span>
-      </span>
-      <span class="rm" data-idx="${idx}">삭제</span>
-    `;
-    fileListEl.appendChild(li);
-  });
-  mergeBtn.disabled = files.length === 0;
-  orderHint.style.display = files.length > 1 ? 'block' : 'none';
-  resultBox.classList.remove('show');
-  ocrBox.classList.remove('show');
-  statusEl.textContent = '';
-  statusEl.classList.remove('error');
-}
-
-fileListEl.addEventListener('click', (e) => {
-  if (e.target.classList.contains('rm')) {
-    const idx = parseInt(e.target.dataset.idx, 10);
-    files.splice(idx, 1);
-    renderList();
-  }
-});
-
-// --- 드래그로 순서 바꾸기 ---
-fileListEl.addEventListener('dragstart', (e) => {
-  const li = e.target.closest('li');
-  if (!li) return;
-  dragSrcIdx = parseInt(li.dataset.idx, 10);
-  li.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-});
-
-fileListEl.addEventListener('dragend', (e) => {
-  const li = e.target.closest('li');
-  if (li) li.classList.remove('dragging');
-  fileListEl.querySelectorAll('li').forEach(el => el.classList.remove('drag-over'));
-});
-
-fileListEl.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  const li = e.target.closest('li');
-  if (!li) return;
-  fileListEl.querySelectorAll('li').forEach(el => el.classList.remove('drag-over'));
-  li.classList.add('drag-over');
-});
-
-fileListEl.addEventListener('drop', (e) => {
-  e.preventDefault();
-  const li = e.target.closest('li');
-  if (!li || dragSrcIdx === null) return;
-
-  const targetIdx = parseInt(li.dataset.idx, 10);
-  if (targetIdx === dragSrcIdx) return;
-
-  const [moved] = files.splice(dragSrcIdx, 1);
-  files.splice(targetIdx, 0, moved);
-  dragSrcIdx = null;
-  renderList();
-});
-
-async function addFiles(fileArray) {
-  for (const file of fileArray) {
-    if (file.type !== 'application/pdf') continue;
-    const buf = await file.arrayBuffer();
-    files.push({ name: file.name, arrayBuffer: buf });
-  }
-  // 업로드한 순서 그대로 유지합니다. 순서를 바꾸고 싶으면 목록에서 드래그하세요.
-  renderList();
-}
 
 dropzone.addEventListener('click', () => fileInput.click());
 
@@ -488,54 +188,39 @@ fileInput.addEventListener('change', (e) => {
 });
 
 dropzone.addEventListener('drop', (e) => {
-  const dropped = Array.from(e.dataTransfer.files);
-  addFiles(dropped);
+  addFiles(Array.from(e.dataTransfer.files));
 });
 
-function applyGrayscaleContrast(imageData, contrastFactor) {
-  const data = imageData.data;
-  for (let i = 0; i < data.length; i += 4) {
-    // 1) 그레이스케일 (밝기 가중 평균)
-    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-
-    // 2) 대비 강화: 128을 기준으로 값을 밀어냄
-    let adjusted = (gray - 128) * contrastFactor + 128;
-    adjusted = Math.max(0, Math.min(255, adjusted));
-
-    data[i] = adjusted;
-    data[i + 1] = adjusted;
-    data[i + 2] = adjusted;
+async function addFiles(fileArray) {
+  for (const file of fileArray) {
+    if (file.type !== 'application/pdf') continue;
+    const buf = await file.arrayBuffer();
+    files.push({ name: file.name, arrayBuffer: buf });
   }
-  return imageData;
+  renderList();
 }
 
-async function renderFirstPageAsProcessedImage(arrayBuffer, contrastFactor) {
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-  const pdf = await loadingTask.promise;
-  const page = await pdf.getPage(1);
-
-  const baseViewport = page.getViewport({ scale: 1 });
-  const viewport = page.getViewport({ scale: RENDER_SCALE });
-
-  const canvas = document.createElement('canvas');
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-  const ctx = canvas.getContext('2d');
-
-  await page.render({ canvasContext: ctx, viewport }).promise;
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const processed = applyGrayscaleContrast(imageData, contrastFactor);
-  ctx.putImageData(processed, 0, 0);
-
-  const pngDataUrl = canvas.toDataURL('image/png');
-
-  return {
-    pngDataUrl,
-    pageWidthPt: baseViewport.width,
-    pageHeightPt: baseViewport.height,
-  };
+function renderList() {
+  fileListEl.innerHTML = '';
+  files.forEach((f, idx) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${idx + 1}. ${f.name}</span><span class="rm" data-idx="${idx}">삭제</span>`;
+    fileListEl.appendChild(li);
+  });
+  mergeBtn.disabled = files.length === 0;
+  downloadLink.classList.remove('show');
+  ocrSection.classList.remove('show');
+  statusEl.textContent = '';
+  statusEl.classList.remove('error');
 }
+
+fileListEl.addEventListener('click', (e) => {
+  if (e.target.classList.contains('rm')) {
+    const idx = parseInt(e.target.dataset.idx, 10);
+    files.splice(idx, 1);
+    renderList();
+  }
+});
 
 mergeBtn.addEventListener('click', async () => {
   if (files.length === 0) return;
@@ -544,41 +229,19 @@ mergeBtn.addEventListener('click', async () => {
   statusEl.classList.remove('error');
   statusEl.textContent = '처리 중...';
 
-  const doPreprocess = preprocessToggle.checked;
-  const contrastFactor = parseFloat(contrastSlider.value);
-
   try {
     const mergedPdf = await PDFDocument.create();
     let successCount = 0;
 
     for (let i = 0; i < files.length; i++) {
-      statusEl.textContent = doPreprocess
-        ? `흑백/대비 처리 중 (${i + 1}/${files.length}): ${files[i].name}`
-        : `처리 중 (${i + 1}/${files.length}): ${files[i].name}`;
-
+      statusEl.textContent = `처리 중 (${i + 1}/${files.length}): ${files[i].name}`;
       try {
-        if (doPreprocess) {
-          const { pngDataUrl, pageWidthPt, pageHeightPt } =
-            await renderFirstPageAsProcessedImage(files[i].arrayBuffer, contrastFactor);
-
-          const pngBytes = await fetch(pngDataUrl).then(r => r.arrayBuffer());
-          const pngImage = await mergedPdf.embedPng(pngBytes);
-
-          const newPage = mergedPdf.addPage([pageWidthPt, pageHeightPt]);
-          newPage.drawImage(pngImage, {
-            x: 0, y: 0,
-            width: pageWidthPt,
-            height: pageHeightPt,
-          });
-        } else {
-          const srcDoc = await PDFDocument.load(files[i].arrayBuffer);
-          const [firstPage] = await mergedPdf.copyPages(srcDoc, [0]);
-          mergedPdf.addPage(firstPage);
-        }
+        const srcDoc = await PDFDocument.load(files[i].arrayBuffer);
+        const [firstPage] = await mergedPdf.copyPages(srcDoc, [0]);
+        mergedPdf.addPage(firstPage);
         successCount++;
       } catch (err) {
         console.error(`'${files[i].name}' 처리 실패:`, err);
-        statusEl.textContent = `⚠️ '${files[i].name}' 처리 중 오류 (건너뜀): ${err.message}`;
       }
     }
 
@@ -587,13 +250,9 @@ mergeBtn.addEventListener('click', async () => {
     const url = URL.createObjectURL(blob);
 
     downloadLink.href = url;
-    resultSummary.textContent = doPreprocess
-      ? `총 ${successCount}페이지, 흑백+대비 강화 처리 후 병합 완료 (OCR 인식률 개선용)`
-      : `총 ${successCount}페이지, 병합이 완료되었습니다. (원본 그대로, 크롭 없음)`;
-
-    resultBox.classList.add('show');
-    ocrBox.classList.add('show');
-    statusEl.textContent = '✅ 완료!';
+    downloadLink.classList.add('show');
+    ocrSection.classList.add('show');
+    statusEl.textContent = `✅ 완료! 총 ${successCount}페이지 병합됨`;
   } catch (err) {
     console.error(err);
     statusEl.textContent = '오류가 발생했습니다: ' + err.message;
@@ -604,5 +263,6 @@ mergeBtn.addEventListener('click', async () => {
 });
 </script>
 
-</body>
-</html>
+
+
+</body></html>
