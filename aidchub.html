@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIDC HUB</title>
+<meta name="description" content="AI 데이터센터(AIDC) 관련 사이트 바로가기 — GLOSSARY, NEWS, SIMULATOR, NOTION">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7f5;
+  color: #111318;
+  font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* 사진 원본 비율(650:434)을 유지하면서 화면에 맞춰 축소 */
+.hub {
+  position: relative;
+  width: min(100%, 1200px, calc(94vh * 650 / 434));
+  aspect-ratio: 650 / 434;
+  container-type: inline-size;
+  overflow: hidden;
+}
+
+.hub-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.02);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 복도 소실점 위치에 맞춘 링크 스택 */
+.hub-links {
+  position: absolute;
+  left: 50%;
+  top: 68%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hub-link {
+  display: block;
+  font-weight: 700;
+  font-size: clamp(13px, 3.07cqi, 34px);
+  line-height: 1.46;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  color: #ff6900;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.hub-link:hover,
+.hub-link:focus-visible {
+  color: #d94f00;
+  transform: scale(1.07);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  text-decoration-thickness: 0.06em;
+}
+
+.hub-link:focus-visible {
+  outline: 2px solid #ff6900;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-link {
+    transition: none;
+  }
+  .hub-link:hover,
+  .hub-link:focus-visible {
+    transform: none;
+  }
+}
+</style>
+</head>
+<body>
+
+  <main class="hub" aria-label="AIDC 관련 사이트 바로가기">
+    <img class="hub-img" src="images/aidc-hub.jpg" alt="AI 데이터센터 서버랙이 늘어선 통로" width="650" height="434" decoding="async">
+    <nav class="hub-links" aria-label="AIDC 외부 사이트 링크">
+      <a class="hub-link" href="https://sunjinfuture2.github.io/AIDC_Infrastructure_Glossary/3d/" target="_blank" rel="noopener noreferrer">GLOSSARY</a>
+      <a class="hub-link" href="https://sunjinfuture2.github.io/sunjin-aidcnews/" target="_blank" rel="noopener noreferrer">NEWS</a>
+      <a class="hub-link" href="https://sunjinfuture2.github.io/sunjin-dashboard/AIDC_Revenue-Structure_Simulator_3y_rev14.4.html" target="_blank" rel="noopener noreferrer">SIMULATOR</a>
+      <a class="hub-link" href="https://app.notion.com/p/AI-AIDC-36de754463d680b8a14ff1c22995be7c" target="_blank" rel="noopener noreferrer">OUR NOTION</a>
+    </nav>
+  </main>
+
+</body>
+</html>
